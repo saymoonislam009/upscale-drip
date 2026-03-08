@@ -1,192 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Upscale Drip — Men's Clothing</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <title>Upscale Drip — Premium Men's Clothing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
+  <!-- ANNOUNCEMENT -->
+  <div class="announcement-bar" id="announcementBar">
+    <span>🚚 Free delivery on orders above ৳1500 &nbsp;·&nbsp; Cash on Delivery available &nbsp;·&nbsp; New drops every week</span>
+    <button onclick="document.getElementById('announcementBar').style.display='none'">✕</button>
+  </div>
+
   <!-- NAV -->
   <nav class="nav" id="navbar">
-    <div class="nav__logo">UPSCALE DRIP</div>
-    <ul class="nav__links">
-      <li><a href="#collection">Collection</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#lookbook">Lookbook</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="nav__actions">
-      <span class="icon">&#9825;</span>
-      <span class="icon">&#9783;</span>
+    <!-- HAMBURGER (three lines) -->
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- LOGO (center) -->
+    <a href="#home" class="nav__logo">
+      <img src="logo.jpg" alt="Upscale Drip" class="nav__logo-img"/>
+      <span>UPSCALE DRIP</span>
+    </a>
+
+    <!-- RIGHT ICONS -->
+    <div class="nav__icons">
+      <button class="nav__icon" id="searchToggle" aria-label="Search">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="nav__icon" aria-label="Wishlist">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+      <button class="nav__icon cart-icon" id="cartBtn" aria-label="Cart">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge" id="cartCount">0</span>
+      </button>
     </div>
-    <div class="hamburger" id="hamburger">&#9776;</div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero__bg"></div>
-    <div class="hero__content">
-      <p class="hero__sub reveal">SS 2026 — New Arrivals</p>
-      <h1 class="hero__title reveal">DRESS<br/><em>LIKE</em><br/>POWER.</h1>
-      <p class="hero__desc reveal">Premium menswear for those who move with intention. Every stitch. Every silhouette.</p>
-      <a href="#collection" class="btn reveal">Shop the Drop</a>
+  <!-- SIDE DRAWER MENU -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+  <aside class="side-menu" id="sideMenu">
+    <div class="side-menu__top">
+      <img src="logo.jpg" alt="Upscale Drip" class="side-menu__logo"/>
+      <p class="side-menu__brand">UPSCALE DRIP</p>
+      <button class="side-menu__close" onclick="closeMenu()">✕</button>
     </div>
-    <div class="hero__scrollhint">SCROLL ↓</div>
+    <nav class="side-menu__nav">
+      <a href="#home"       onclick="closeMenu()">Home</a>
+      <a href="#new"        onclick="closeMenu()">New Arrivals</a>
+      <a href="#collection" onclick="closeMenu()">Men's Collection</a>
+      <a href="#panjabi"    onclick="closeMenu()">Panjabi</a>
+      <a href="#sale"       onclick="closeMenu()" class="sale-link">Sale 🔥</a>
+      <a href="#about"      onclick="closeMenu()">About Us</a>
+    </nav>
+    <div class="side-menu__footer">
+      <a href="https://www.instagram.com/upscale_drip/" target="_blank" class="ig-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        @upscale_drip
+      </a>
+    </div>
+  </aside>
+
+  <!-- SEARCH BAR -->
+  <div class="search-bar" id="searchBar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Search shirts, polo, panjabi..."/>
+    <button id="searchClose">✕</button>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero__slides" id="heroSlides">
+      <div class="hero__slide active" style="background-image:url('https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=1600&q=80')">
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+          <p class="hero__tag">SS 2026 — New Collection</p>
+          <h1>DRESS LIKE<br/><em>ROYALTY.</em></h1>
+          <p class="hero__sub">Premium menswear crafted for those who move with intention.</p>
+          <div class="hero__btns">
+            <a href="#collection" class="btn">Shop Now</a>
+            <a href="#new" class="btn btn--ghost">New Arrivals</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero__slide" style="background-image:url('https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=1600&q=80')">
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+          <p class="hero__tag">Exclusive Drop</p>
+          <h1>SHORT<br/><em>PANJABI.</em></h1>
+          <p class="hero__sub">Crafted with premium fabric. Traditional elegance, modern cut.</p>
+          <div class="hero__btns">
+            <a href="#panjabi" class="btn">Shop Panjabi</a>
+            <a href="#collection" class="btn btn--ghost">View All</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero__slide" style="background-image:url('https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1600&q=80')">
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+          <p class="hero__tag">Premium Linen</p>
+          <h1>LINEN<br/><em>SHIRTS.</em></h1>
+          <p class="hero__sub">Breathable. Stylish. Perfect for every occasion.</p>
+          <div class="hero__btns">
+            <a href="#collection" class="btn">Shop Linen</a>
+            <a href="#sale" class="btn btn--ghost">Sale Items</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slider dots -->
+    <div class="hero__dots" id="heroDots">
+      <button class="hero__dot active" onclick="goSlide(0)"></button>
+      <button class="hero__dot" onclick="goSlide(1)"></button>
+      <button class="hero__dot" onclick="goSlide(2)"></button>
+    </div>
+    <button class="hero__arrow hero__arrow--prev" onclick="prevSlide()">&#8592;</button>
+    <button class="hero__arrow hero__arrow--next" onclick="nextSlide()">&#8594;</button>
+    <div class="hero__scroll">scroll ↓</div>
+  </section>
+
+  <!-- CATEGORY STRIP -->
+  <section class="categories">
+    <div class="cat-item reveal" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-img" style="background-image:url('https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=400&q=80')"></div>
+      <p>Panjabi</p>
+    </div>
+    <div class="cat-item reveal" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-img" style="background-image:url('https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=400&q=80')"></div>
+      <p>Linen Shirts</p>
+    </div>
+    <div class="cat-item reveal" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-img" style="background-image:url('https://images.unsplash.com/photo-1571455786673-9d9d6c194f90?w=400&q=80')"></div>
+      <p>Polo</p>
+    </div>
+    <div class="cat-item reveal" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-img" style="background-image:url('https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=400&q=80')"></div>
+      <p>Jackets</p>
+    </div>
+    <div class="cat-item reveal" onclick="document.getElementById('sale').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-img cat-sale-img" style="background-image:url('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400&q=80')"></div>
+      <p>Sale 🔥</p>
+    </div>
   </section>
 
   <!-- MARQUEE -->
   <div class="marquee-wrap">
     <div class="marquee">
-      <span>UPSCALE DRIP &nbsp;·&nbsp; PREMIUM MENSWEAR &nbsp;·&nbsp; NEW ARRIVALS &nbsp;·&nbsp; SS 2026 &nbsp;·&nbsp; CRAFTED FOR MEN &nbsp;·&nbsp; UPSCALE DRIP &nbsp;·&nbsp; PREMIUM MENSWEAR &nbsp;·&nbsp; NEW ARRIVALS &nbsp;·&nbsp; SS 2026 &nbsp;·&nbsp;</span>
-      <span>UPSCALE DRIP &nbsp;·&nbsp; PREMIUM MENSWEAR &nbsp;·&nbsp; NEW ARRIVALS &nbsp;·&nbsp; SS 2026 &nbsp;·&nbsp; CRAFTED FOR MEN &nbsp;·&nbsp; UPSCALE DRIP &nbsp;·&nbsp; PREMIUM MENSWEAR &nbsp;·&nbsp; NEW ARRIVALS &nbsp;·&nbsp; SS 2026 &nbsp;·&nbsp;</span>
+      <span>UPSCALE DRIP &nbsp;·&nbsp; PREMIUM MENSWEAR &nbsp;·&nbsp; NEW ARRIVALS SS26 &nbsp;·&nbsp; FREE DELIVERY ABOVE ৳1500 &nbsp;·&nbsp; CASH ON DELIVERY &nbsp;·&nbsp; SHORT PANJABI &nbsp;·&nbsp; LINEN SHIRTS &nbsp;·&nbsp; POLO COLLECTION &nbsp;·&nbsp;</span>
+      <span>UPSCALE DRIP &nbsp;·&nbsp; PREMIUM MENSWEAR &nbsp;·&nbsp; NEW ARRIVALS SS26 &nbsp;·&nbsp; FREE DELIVERY ABOVE ৳1500 &nbsp;·&nbsp; CASH ON DELIVERY &nbsp;·&nbsp; SHORT PANJABI &nbsp;·&nbsp; LINEN SHIRTS &nbsp;·&nbsp; POLO COLLECTION &nbsp;·&nbsp;</span>
     </div>
   </div>
 
-  <!-- COLLECTION -->
-  <section class="collection" id="collection">
-    <div class="section-header">
-      <p class="label">— The Edit</p>
-      <h2>Latest Collection</h2>
+  <!-- NEW ARRIVALS -->
+  <section class="section" id="new">
+    <div class="section__hd reveal">
+      <p class="label">Just Dropped</p>
+      <h2>New Arrivals</h2>
     </div>
-    <div class="grid">
+    <div class="products-grid" id="newGrid"></div>
+  </section>
 
-      <div class="card reveal">
-        <div class="card__img" style="background:#1a1a1a;">
-          <div class="card__placeholder">👔</div>
-          <div class="card__overlay">
-            <a href="#" class="card__cta">Quick View</a>
-          </div>
-        </div>
-        <div class="card__info">
-          <h3>Obsidian Blazer</h3>
-          <p>Structured Italian wool. Sharp lapels.</p>
-          <span>$340</span>
-        </div>
-      </div>
-
-      <div class="card reveal">
-        <div class="card__img" style="background:#2b2b2b;">
-          <div class="card__placeholder">🥼</div>
-          <div class="card__overlay">
-            <a href="#" class="card__cta">Quick View</a>
-          </div>
-        </div>
-        <div class="card__info">
-          <h3>Onyx Trench Coat</h3>
-          <p>Double-breasted. Midnight-ready.</p>
-          <span>$520</span>
-        </div>
-      </div>
-
-      <div class="card reveal">
-        <div class="card__img" style="background:#111;">
-          <div class="card__placeholder">👕</div>
-          <div class="card__overlay">
-            <a href="#" class="card__cta">Quick View</a>
-          </div>
-        </div>
-        <div class="card__info">
-          <h3>Signature Linen Shirt</h3>
-          <p>Premium Egyptian linen. Effortless drape.</p>
-          <span>$165</span>
-        </div>
-      </div>
-
-      <div class="card reveal">
-        <div class="card__img" style="background:#1e1e1e;">
-          <div class="card__placeholder">👖</div>
-          <div class="card__overlay">
-            <a href="#" class="card__cta">Quick View</a>
-          </div>
-        </div>
-        <div class="card__info">
-          <h3>Tailored Drip Trousers</h3>
-          <p>High-waist. Tapered cut. Boss energy.</p>
-          <span>$210</span>
-        </div>
-      </div>
-
+  <!-- FULL COLLECTION -->
+  <section class="section section--dark" id="collection">
+    <div class="section__hd reveal">
+      <p class="label">The Full Edit</p>
+      <h2>Men's Collection</h2>
     </div>
-    <div class="center-btn">
-      <a href="#" class="btn btn--outline">View All Pieces</a>
+    <div class="filters reveal">
+      <button class="fbtn active" data-f="all">All</button>
+      <button class="fbtn" data-f="panjabi">Panjabi</button>
+      <button class="fbtn" data-f="shirt">Shirts</button>
+      <button class="fbtn" data-f="polo">Polo</button>
+      <button class="fbtn" data-f="jacket">Jackets</button>
+      <button class="fbtn" data-f="trouser">Trousers</button>
+    </div>
+    <div class="products-grid" id="allGrid"></div>
+    <div style="text-align:center;margin-top:40px;">
+      <button class="btn" id="loadMore">Load More</button>
+    </div>
+  </section>
+
+  <!-- PANJABI SECTION -->
+  <section class="section panjabi-section" id="panjabi">
+    <div class="section__hd reveal">
+      <p class="label">Traditional &amp; Modern</p>
+      <h2>Short Panjabi</h2>
+    </div>
+    <div class="products-grid" id="panjabi-grid"></div>
+  </section>
+
+  <!-- SALE -->
+  <section class="section" id="sale" style="background:linear-gradient(135deg,#1a0a04,#2c1a0e);">
+    <div class="section__hd reveal">
+      <p class="label">Limited Time Only</p>
+      <h2>🔥 Sale Items</h2>
+    </div>
+    <div class="products-grid" id="saleGrid"></div>
+  </section>
+
+  <!-- MID BANNER -->
+  <section class="mid-banner reveal">
+    <div class="mid-banner__inner">
+      <p class="label">Follow Us</p>
+      <h2>Shop Our Instagram</h2>
+      <p>See how our customers style Upscale Drip pieces. Tag us for a chance to be featured.</p>
+      <a href="https://www.instagram.com/upscale_drip/" target="_blank" class="btn ig-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        @upscale_drip
+      </a>
     </div>
   </section>
 
   <!-- ABOUT -->
-  <section class="about" id="about">
-    <div class="about__img reveal">
-      <div class="about__img-inner">UD</div>
+  <section class="section about" id="about">
+    <div class="about__img-col reveal">
+      <img src="logo.jpg" alt="Upscale Drip"/>
     </div>
     <div class="about__text reveal">
-      <p class="label">— Our Story</p>
+      <p class="label">Our Story</p>
       <h2>Built for Men Who Demand More.</h2>
-      <p>Upscale Drip was born from one belief: a man's clothing should speak before he does. We source the finest fabrics, obsess over every silhouette, and deliver looks that command respect — in the boardroom or on the block.</p>
-      <p>No shortcuts. No compromise. Just drip.</p>
-      <a href="#contact" class="btn">Get in Touch</a>
+      <p>Upscale Drip was born from one belief — a man's clothing should speak before he does. We source the finest fabrics, obsess over every silhouette, and deliver looks that command respect in the boardroom or on the block.</p>
+      <p>Based in Bangladesh. Shipping nationwide. Premium quality, every time.</p>
+      <div class="stats-row">
+        <div class="stat"><strong>500+</strong><span>Happy Customers</span></div>
+        <div class="stat"><strong>50+</strong><span>Products</span></div>
+        <div class="stat"><strong>100%</strong><span>Quality Checked</span></div>
+      </div>
+      <a href="https://www.instagram.com/upscale_drip/" target="_blank" class="btn" style="margin-top:28px;display:inline-flex;align-items:center;gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        Follow on Instagram
+      </a>
     </div>
   </section>
 
-  <!-- LOOKBOOK -->
-  <section class="lookbook" id="lookbook">
-    <div class="section-header section-header--light">
-      <p class="label">— Visual Edit</p>
-      <h2>Lookbook SS26</h2>
-    </div>
-    <div class="lookbook__grid">
-      <div class="lbook lbook--tall reveal"><span>01</span></div>
-      <div class="lbook reveal"><span>02</span></div>
-      <div class="lbook reveal"><span>03</span></div>
-      <div class="lbook lbook--wide reveal"><span>04</span></div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section class="contact" id="contact">
-    <div class="section-header">
-      <p class="label">— Stay in the Loop</p>
+  <!-- NEWSLETTER -->
+  <section class="newsletter">
+    <div class="reveal">
+      <p class="label">Stay Updated</p>
       <h2>Join the Inner Circle</h2>
-      <p class="contact__sub">Early access. Exclusive drops. Members only.</p>
+      <p>Early access to drops, exclusive deals &amp; style tips.</p>
+      <form class="nl-form" onsubmit="handleNL(event)">
+        <input type="email" placeholder="Enter your email address" required/>
+        <button type="submit" class="btn">Subscribe</button>
+      </form>
+      <p id="nlMsg"></p>
     </div>
-    <form class="contact__form" onsubmit="handleSubmit(event)">
-      <input type="text" placeholder="Your Name" required/>
-      <input type="email" placeholder="Email Address" required/>
-      <button type="submit" class="btn">Subscribe</button>
-    </form>
-    <p class="contact__confirm" id="formConfirm"></p>
   </section>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer__top">
+    <div class="footer__grid">
       <div class="footer__brand">
-        <div class="footer__logo">UPSCALE DRIP</div>
+        <img src="logo.jpg" alt="Upscale Drip"/>
+        <p class="footer__name">UPSCALE DRIP</p>
         <p>Premium menswear. Unapologetically bold.</p>
+        <div class="footer__social">
+          <a href="https://www.instagram.com/upscale_drip/" target="_blank">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </a>
+          <a href="#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            Facebook
+          </a>
+        </div>
       </div>
-      <div class="footer__links">
-        <h4>Navigate</h4>
+      <div class="footer__col">
+        <h4>Shop</h4>
         <ul>
-          <li><a href="#collection">Collection</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#lookbook">Lookbook</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#new">New Arrivals</a></li>
+          <li><a href="#panjabi">Panjabi</a></li>
+          <li><a href="#collection">All Products</a></li>
+          <li><a href="#sale">Sale</a></li>
         </ul>
       </div>
-      <div class="footer__social">
-        <h4>Follow</h4>
+      <div class="footer__col">
+        <h4>Help</h4>
         <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">TikTok</a></li>
-          <li><a href="#">Pinterest</a></li>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Return &amp; Exchange</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://www.instagram.com/upscale_drip/" target="_blank">@upscale_drip</a></li>
+          <li><a href="mailto:hello@upscaledrip.com">hello@upscaledrip.com</a></li>
+          <li>Dhaka, Bangladesh</li>
         </ul>
       </div>
     </div>
     <div class="footer__bottom">
       <p>© 2026 Upscale Drip. All rights reserved.</p>
+      <p>Cash on Delivery · bKash · Nagad</p>
     </div>
   </footer>
+
+  <!-- ========== CART DRAWER ========== -->
+  <div class="overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="drawer-header">
+      <h3>Cart (<span id="cartItemCount">0</span>)</h3>
+      <button onclick="closeCart()">✕</button>
+    </div>
+    <div class="drawer-body" id="cartItems">
+      <div class="empty-msg">Your cart is empty 🛍️</div>
+    </div>
+    <div class="drawer-footer" id="cartFooter">
+      <div class="cart-total-row"><span>Subtotal</span><strong id="cartTotal">৳0</strong></div>
+      <p class="free-ship-msg" id="freeShipMsg"></p>
+      <button class="btn" style="width:100%;margin-top:14px;" onclick="openCheckout()">Checkout — Cash on Delivery</button>
+      <button class="btn btn--ghost" style="width:100%;margin-top:10px;" onclick="closeCart()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- ========== PRODUCT MODAL ========== -->
+  <div class="overlay" id="modalOverlay" onclick="closeModal()"></div>
+  <div class="prod-modal" id="prodModal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-body">
+      <span class="modal-tag" id="modalTag"></span>
+      <h2 id="modalName"></h2>
+      <div class="modal-price-row">
+        <span class="mprice" id="mPrice"></span>
+        <span class="mold"  id="mOld"></span>
+        <span class="mdis"  id="mDis"></span>
+      </div>
+      <p class="mdesc" id="mDesc"></p>
+      <div class="modal-opt">
+        <p class="opt-label">Select Size</p>
+        <div class="size-grid" id="sizeGrid"></div>
+      </div>
+      <div class="modal-opt">
+        <p class="opt-label">Quantity</p>
+        <div class="qty-box">
+          <button onclick="chQty(-1)">−</button>
+          <span id="qtyNum">1</span>
+          <button onclick="chQty(1)">+</button>
+        </div>
+      </div>
+      <button class="btn add-btn" onclick="addFromModal()">🛍️ Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- ========== CHECKOUT MODAL ========== -->
+  <div class="overlay" id="coOverlay" onclick="closeCheckout()"></div>
+  <div class="co-modal" id="coModal">
+    <button class="modal-close" onclick="closeCheckout()">✕</button>
+    <h2>Complete Your Order</h2>
+    <p class="co-sub">We'll deliver Cash on Delivery to your door</p>
+    <form onsubmit="placeOrder(event)">
+      <div class="form-row2">
+        <input type="text" placeholder="Full Name *" id="oName" required/>
+        <input type="tel"  placeholder="Phone Number *" id="oPhone" required/>
+      </div>
+      <textarea placeholder="Full Delivery Address *" id="oAddr" rows="3" required></textarea>
+      <input type="text" placeholder="City / District *" id="oCity" required/>
+      <div class="order-sum" id="orderSum"></div>
+      <div class="order-total-line">Total: <strong id="oTotal"></strong></div>
+      <button type="submit" class="btn" style="width:100%;margin-top:16px;">✅ Place Order</button>
+    </form>
+  </div>
+
+  <!-- ========== SUCCESS ========== -->
+  <div class="overlay hi-overlay" id="sucOverlay"></div>
+  <div class="suc-modal" id="sucModal">
+    <div style="font-size:3.5rem;">✅</div>
+    <h2>Order Placed!</h2>
+    <p>Thank you! We'll call you within 24 hours to confirm delivery.</p>
+    <button class="btn" onclick="closeSuc()">Continue Shopping</button>
+  </div>
 
   <script src="script.js"></script>
 </body>
