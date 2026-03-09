@@ -1,4 +1,4 @@
- // =============================================
+// =============================================
 //  UPSCALE DRIP — Main Script v3
 // =============================================
 
@@ -421,4 +421,4 @@ function handleNL(e) {
 // ── UTIL ──
 function on(id)  { document.getElementById(id).classList.add('on'); }
 function off(id) { document.getElementById(id).classList.remove('on'); }
-      
+
