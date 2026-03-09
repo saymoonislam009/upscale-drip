@@ -1,364 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — Upscale Drip</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#1e0f06;--bg2:#2a1509;--bg3:#361b0c;--bg4:#180a03;
-      --accent:#c07830;--a2:#e09048;
-      --cream:#f0e0c8;--c2:#faf4ec;--muted:rgba(240,224,200,.42);
-      --danger:#c0392b;--ok:#27ae60;--info:#2980b9;
-      --r:6px;--fs:'Playfair Display',serif;--fb:'Jost',sans-serif;
-    }
-    html{scroll-behavior:smooth}
-    body{background:var(--bg);color:var(--cream);font-family:var(--fb);font-weight:300;min-height:100vh}
-    a,a:visited,a:hover{color:inherit;text-decoration:none}
-    button{font-family:inherit;cursor:pointer}
-    input,select,textarea{font-family:inherit}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Upscale Drip</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1e0f06;--bg2:#2a1509;--bg3:#361b0c;--bg4:#130702;
+  --ac:#c07830;--ac2:#e09048;
+  --cr:#f0e0c8;--cr2:#faf4ec;--mu:rgba(240,224,200,.42);
+  --red:#c0392b;--grn:#27ae60;--blu:#2471a3;
+  --r:6px;--sf:'Playfair Display',serif;--bf:'Jost',sans-serif;
+}
+body{background:var(--bg);color:var(--cr);font-family:var(--bf);font-weight:300;min-height:100vh}
+a,a:visited,a:hover{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;cursor:pointer}
+input,select,textarea{cursor:text}
 
-    /* LOGIN */
-    #ls{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-    .lb{background:var(--bg2);border:1px solid rgba(192,120,48,.2);border-radius:12px;padding:52px 44px 44px;width:100%;max-width:420px;box-shadow:0 24px 80px rgba(0,0,0,.6);text-align:center}
-    .lb img{width:72px;height:72px;border-radius:12px;object-fit:cover;margin-bottom:18px;border:2px solid rgba(192,120,48,.3)}
-    .lb h1{font-family:var(--fs);font-size:1.8rem;color:var(--c2);margin-bottom:4px}
-    .lb p{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:32px}
-    #le{margin-top:12px;font-size:.78rem;color:var(--danger);min-height:18px}
+/* SCREENS */
+.scr{display:none}
+.scr.on{display:flex}
 
-    /* FIELDS */
-    .f{display:block;width:100%;padding:12px 15px;background:rgba(255,255,255,.04);border:1px solid rgba(192,120,48,.22);color:var(--cream);font-size:.88rem;border-radius:var(--r);outline:none;margin-bottom:12px;transition:border-color .3s}
-    .f:focus{border-color:var(--accent)}
-    .f::placeholder{color:var(--muted)}
-    .f option{background:var(--bg2)}
-    textarea.f{resize:vertical}
+/* ── LOGIN ── */
+#scrLogin{align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.lbox{background:var(--bg2);border:1px solid rgba(192,120,48,.22);border-radius:14px;padding:50px 42px 42px;width:100%;max-width:390px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.lbox img{width:68px;height:68px;border-radius:10px;object-fit:cover;margin-bottom:16px;border:2px solid rgba(192,120,48,.3)}
+.lbox h1{font-family:var(--sf);font-size:1.75rem;color:var(--cr2);margin-bottom:3px}
+.lbox .sub{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--ac);margin-bottom:30px}
+.lbox input{display:block;width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(192,120,48,.2);color:var(--cr);font-size:.88rem;border-radius:var(--r);outline:none;margin-bottom:11px;transition:border-color .25s}
+.lbox input:focus{border-color:var(--ac)}
+.lbox input::placeholder{color:var(--mu)}
+#lerr{margin-top:10px;font-size:.75rem;color:var(--red);min-height:16px}
 
-    /* BUTTONS */
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 22px;background:var(--accent);color:var(--bg);font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:var(--r);transition:background .25s,transform .2s}
-    .btn:hover{background:var(--a2);transform:translateY(-1px)}
-    .btn-full{width:100%;padding:13px}
-    .btn-sm{padding:6px 13px;font-size:.62rem}
-    .btn-g{background:transparent;border:1px solid rgba(192,120,48,.3);color:var(--accent)}
-    .btn-g:hover{background:rgba(192,120,48,.1)}
-    .btn-d{background:var(--danger)}
-    .btn-d:hover{background:#a93226}
-    .btn-ok{background:var(--ok)}
-    .btn-ok:hover{background:#1e8449}
-    .btn-info{background:var(--info)}
-    .btn-info:hover{background:#1c6ea4}
+/* ── SETUP ── */
+#scrSetup{align-items:center;justify-content:center;min-height:100vh;padding:24px;flex-direction:column}
+.sbox{background:var(--bg2);border:1px solid rgba(192,120,48,.2);border-radius:12px;padding:40px;width:100%;max-width:560px;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.sbox h1{font-family:var(--sf);font-size:1.75rem;color:var(--cr2);margin-bottom:3px}
+.sbox .stag{font-size:.66rem;letter-spacing:3px;text-transform:uppercase;color:var(--ac);margin-bottom:22px}
+.info-panel{background:rgba(36,113,163,.12);border:1px solid rgba(36,113,163,.28);border-radius:var(--r);padding:14px 16px;margin-bottom:20px;font-size:.8rem;color:#aed6f1;line-height:1.75}
+.info-panel strong{color:#d6eaf8}
+.info-panel a{color:#5dade2;text-decoration:underline}
+.steps{list-style:none;counter-reset:s;margin-bottom:22px}
+.steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;margin-bottom:13px;font-size:.8rem;color:var(--mu);line-height:1.6}
+.steps li::before{content:counter(s);background:var(--ac);color:var(--bg);width:22px;height:22px;min-width:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;margin-top:1px}
+.steps li b{color:var(--cr)}
+.steps li code{background:rgba(192,120,48,.15);padding:1px 6px;border-radius:3px;font-size:.76rem;color:var(--ac)}
+#setupErr{margin-top:10px;font-size:.75rem;color:var(--red);min-height:16px}
 
-    /* LAYOUT */
-    #as{display:none}
-    .wrap{display:flex;min-height:100vh}
+/* ── ADMIN ── */
+#scrAdmin{flex-direction:row;min-height:100vh}
+.sidebar{width:226px;min-width:226px;background:var(--bg4);border-right:1px solid rgba(192,120,48,.1);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-top{padding:20px 16px 15px;border-bottom:1px solid rgba(192,120,48,.1);display:flex;align-items:center;gap:10px}
+.sb-top img{width:36px;height:36px;border-radius:7px;object-fit:cover;flex-shrink:0}
+.sb-top strong{font-family:var(--sf);font-size:.86rem;color:var(--ac);letter-spacing:1px;display:block;line-height:1.3}
+.sb-top span{font-size:.57rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu)}
+.sb-nav{flex:1;padding:6px 0}
+.si{display:flex;align-items:center;gap:11px;padding:12px 16px;font-size:.78rem;color:var(--mu);cursor:pointer;border-left:3px solid transparent;transition:all .2s;user-select:none}
+.si:hover{color:var(--cr);background:rgba(192,120,48,.06)}
+.si.on{color:var(--ac);background:rgba(192,120,48,.08);border-left-color:var(--ac)}
+.sb-foot{padding:12px 16px;border-top:1px solid rgba(192,120,48,.1)}
+.sb-foot a{display:flex;align-items:center;gap:8px;font-size:.7rem;color:var(--mu);transition:color .2s;margin-bottom:7px}
+.sb-foot a:hover{color:var(--cr)}
 
-    /* SIDEBAR */
-    .sb{width:230px;min-width:230px;background:var(--bg4);border-right:1px solid rgba(192,120,48,.1);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-    .sb-top{padding:20px 16px 14px;border-bottom:1px solid rgba(192,120,48,.1);display:flex;align-items:center;gap:10px}
-    .sb-top img{width:36px;height:36px;border-radius:7px;object-fit:cover;flex-shrink:0}
-    .sb-top strong{font-family:var(--fs);font-size:.88rem;color:var(--accent);letter-spacing:1px;display:block}
-    .sb-top span{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
-    .sb-nav{flex:1;padding:6px 0}
-    .si{display:flex;align-items:center;gap:11px;padding:12px 16px;font-size:.78rem;letter-spacing:.5px;color:var(--muted);cursor:pointer;border-left:3px solid transparent;transition:all .22s}
-    .si:hover{color:var(--cream);background:rgba(192,120,48,.06)}
-    .si.on{color:var(--accent);background:rgba(192,120,48,.08);border-left-color:var(--accent)}
-    .sb-ft{padding:12px 16px;border-top:1px solid rgba(192,120,48,.1)}
-    .sb-ft a{display:flex;align-items:center;gap:7px;font-size:.7rem;color:var(--muted);transition:color .22s;margin-bottom:8px}
-    .sb-ft a:hover{color:var(--cream)}
+.main{flex:1;padding:30px 34px;overflow-y:auto;min-width:0}
+.pg{display:none}.pg.on{display:block}
+.ptitle{font-family:var(--sf);font-size:1.85rem;color:var(--cr2);margin-bottom:3px}
+.psub{font-size:.66rem;letter-spacing:3px;text-transform:uppercase;color:var(--ac);margin-bottom:26px}
 
-    /* MAIN */
-    .main{flex:1;padding:34px 38px;overflow-y:auto}
-    .pg{display:none}.pg.on{display:block}
-    .pt{font-family:var(--fs);font-size:1.9rem;color:var(--c2);margin-bottom:3px}
-    .ps{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:28px}
+/* Shared field */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:5px}
+.f{display:block;width:100%;padding:11px 13px;background:rgba(255,255,255,.04);border:1px solid rgba(192,120,48,.2);color:var(--cr);font-size:.86rem;border-radius:var(--r);outline:none;transition:border-color .25s;resize:vertical}
+.f:focus{border-color:var(--ac)}
+.f::placeholder{color:var(--mu)}
+.f option{background:var(--bg2)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-    /* STATS */
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px}
-    .sc{background:var(--bg2);border:1px solid rgba(192,120,48,.12);border-radius:8px;padding:20px 16px}
-    .sc-l{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
-    .sc-v{font-family:var(--fs);font-size:2rem;color:var(--accent)}
-    .sc-s{font-size:.68rem;color:var(--muted);margin-top:3px}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 22px;background:var(--ac);color:var(--bg);font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:var(--r);transition:background .22s,transform .15s}
+.btn:hover{background:var(--ac2);transform:translateY(-1px)}
+.btn-full{width:100%;padding:13px}
+.btn-sm{padding:6px 13px;font-size:.6rem}
+.btn-g{background:transparent;border:1px solid rgba(192,120,48,.28);color:var(--ac)}
+.btn-g:hover{background:rgba(192,120,48,.1)}
+.btn-r{background:var(--red)}.btn-r:hover{background:#a93226}
+.btn-grn{background:var(--grn)}.btn-grn:hover{background:#1e8449}
+.btn-blu{background:var(--blu)}.btn-blu:hover{background:#1a5276}
 
-    /* TABLE BOX */
-    .tb{background:var(--bg2);border:1px solid rgba(192,120,48,.1);border-radius:8px;overflow:hidden}
-    .tbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(192,120,48,.1);flex-wrap:wrap;gap:10px}
-    .tbar h3{font-family:var(--fs);font-size:1rem;color:var(--c2)}
-    .chips{display:flex;gap:6px;flex-wrap:wrap}
-    .ch{padding:4px 12px;border-radius:20px;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(192,120,48,.22);background:transparent;color:var(--muted);transition:all .22s}
-    .ch:hover{border-color:var(--accent);color:var(--cream)}
-    .ch.on{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:700}
-    table{width:100%;border-collapse:collapse}
-    thead tr{background:rgba(192,120,48,.07)}
-    th{padding:10px 13px;text-align:left;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);border-bottom:1px solid rgba(192,120,48,.1)}
-    td{padding:10px 13px;font-size:.78rem;border-bottom:1px solid rgba(192,120,48,.06);vertical-align:middle}
-    tr:last-child td{border-bottom:none}
-    tr:hover td{background:rgba(192,120,48,.04)}
-    .ti{width:44px;height:44px;border-radius:4px;object-fit:cover;object-position:top}
-    .bc{display:inline-block;padding:2px 8px;border-radius:3px;font-size:.57rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(192,120,48,.13);color:var(--accent)}
-    .bn{background:rgba(192,120,48,.26);color:var(--a2)}
-    .ta{display:flex;gap:5px}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:26px}
+.sc{background:var(--bg2);border:1px solid rgba(192,120,48,.12);border-radius:8px;padding:18px 15px}
+.sc-l{font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--mu);margin-bottom:6px}
+.sc-v{font-family:var(--sf);font-size:1.9rem;color:var(--ac)}
+.sc-s{font-size:.66rem;color:var(--mu);margin-top:3px}
 
-    /* FORM MODAL */
-    .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);z-index:900}
-    .ov.on{display:block}
-    .fm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.93);background:var(--bg2);width:92%;max-width:560px;max-height:92vh;overflow-y:auto;border-radius:10px;padding:34px 32px;border:1px solid rgba(192,120,48,.2);box-shadow:0 28px 80px rgba(0,0,0,.7);z-index:901;opacity:0;pointer-events:none;transition:all .28s}
-    .fm.on{opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1)}
-    .mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px}
-    .mh h2{font-family:var(--fs);font-size:1.5rem;color:var(--c2)}
-    .mh button{background:none;border:none;color:var(--muted);font-size:1.05rem;padding:4px;transition:color .2s}
-    .mh button:hover{color:var(--cream)}
-    .fg{margin-bottom:14px}
-    .fg label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
-    .fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .ip{width:100%;height:130px;border-radius:var(--r);object-fit:cover;object-position:top;border:1px solid rgba(192,120,48,.14);margin-top:7px;display:none}
-    .ip.on{display:block}
-    .fa{display:flex;gap:9px;margin-top:20px}
+/* Cloud badge */
+.cloud-badge{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;padding:5px 13px;border-radius:18px;border:1px solid;margin-bottom:18px}
+.cb-ok{color:#58d68d;border-color:rgba(88,214,141,.3);background:rgba(88,214,141,.08)}
+.cb-warn{color:#f39c12;border-color:rgba(243,156,18,.3);background:rgba(243,156,18,.08)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
 
-    /* TOGGLE */
-    .trow{display:flex;align-items:center;gap:13px}
-    .tog{position:relative;width:42px;height:22px;flex-shrink:0}
-    .tog input{opacity:0;width:0;height:0}
-    .ts{position:absolute;inset:0;background:rgba(192,120,48,.17);border-radius:22px;cursor:pointer;transition:.28s;border:1px solid rgba(192,120,48,.26)}
-    .ts:before{content:'';position:absolute;width:16px;height:16px;bottom:2px;left:2px;background:var(--muted);border-radius:50%;transition:.28s}
-    .tog input:checked+.ts{background:var(--accent);border-color:var(--accent)}
-    .tog input:checked+.ts:before{transform:translateX(20px);background:#fff}
-    .tl{font-size:.78rem;color:var(--cream)}
+/* Table */
+.tbox{background:var(--bg2);border:1px solid rgba(192,120,48,.1);border-radius:8px;overflow:hidden}
+.tbar{display:flex;align-items:center;justify-content:space-between;padding:14px 17px;border-bottom:1px solid rgba(192,120,48,.1);flex-wrap:wrap;gap:8px}
+.tbar h3{font-family:var(--sf);font-size:.98rem;color:var(--cr2)}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{padding:4px 11px;border-radius:16px;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(192,120,48,.2);background:transparent;color:var(--mu);cursor:pointer;transition:all .2s}
+.chip:hover{border-color:var(--ac);color:var(--cr)}
+.chip.on{background:var(--ac);border-color:var(--ac);color:var(--bg);font-weight:700}
+table{width:100%;border-collapse:collapse}
+thead tr{background:rgba(192,120,48,.07)}
+th{padding:9px 13px;text-align:left;font-size:.57rem;letter-spacing:2px;text-transform:uppercase;color:var(--ac);font-weight:600;border-bottom:1px solid rgba(192,120,48,.1)}
+td{padding:10px 13px;font-size:.76rem;border-bottom:1px solid rgba(192,120,48,.06);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(192,120,48,.04)}
+.tdimg{width:44px;height:44px;border-radius:4px;object-fit:cover;object-position:top}
+.bcat{display:inline-block;padding:2px 7px;border-radius:3px;font-size:.56rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(192,120,48,.14);color:var(--ac)}
+.bnew{background:rgba(192,120,48,.26);color:var(--ac2)}
+.tacts{display:flex;gap:5px}
 
-    /* SETUP PANEL */
-    .setup-box{background:var(--bg2);border:1px solid rgba(192,120,48,.2);border-radius:10px;padding:28px;max-width:580px;margin-bottom:28px}
-    .setup-box h3{font-family:var(--fs);font-size:1.2rem;color:var(--c2);margin-bottom:6px}
-    .setup-box .hint{font-size:.8rem;color:var(--muted);margin-bottom:18px;line-height:1.7}
-    .setup-box .hint a{color:var(--accent);text-decoration:underline}
-    .step{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
-    .step-num{width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--accent);color:var(--bg);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
-    .step-text{font-size:.82rem;color:var(--muted);line-height:1.7}
-    .step-text code{background:rgba(192,120,48,.12);padding:2px 7px;border-radius:3px;font-size:.78rem;color:var(--a2);font-family:monospace}
-    .conn-status{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:var(--r);font-size:.78rem;margin-bottom:16px}
-    .conn-ok{background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.3);color:#6fcf97}
-    .conn-err{background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.3);color:#e57373}
-    .conn-none{background:rgba(192,120,48,.08);border:1px solid rgba(192,120,48,.2);color:var(--muted)}
-    .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-    .dot-ok{background:#27ae60}.dot-err{background:var(--danger)}.dot-none{background:var(--muted)}
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);z-index:900}
+.ov.on{display:block}
+.fmod{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.93);background:var(--bg2);width:92%;max-width:540px;max-height:90vh;overflow-y:auto;border-radius:10px;padding:32px 28px;border:1px solid rgba(192,120,48,.2);box-shadow:0 30px 80px rgba(0,0,0,.7);z-index:901;opacity:0;pointer-events:none;transition:all .26s}
+.fmod.on{opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1)}
+.mhd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.mhd h2{font-family:var(--sf);font-size:1.45rem;color:var(--cr2)}
+.mhd button{background:none;border:none;color:var(--mu);font-size:1.1rem;padding:3px;transition:color .2s}
+.mhd button:hover{color:var(--cr)}
+.frow{display:flex;gap:9px;margin-top:18px}
+.iprev{width:100%;height:130px;border-radius:var(--r);object-fit:cover;object-position:top;border:1px solid rgba(192,120,48,.15);margin-top:7px;display:none}
+.iprev.on{display:block}
 
-    /* TOAST */
-    #toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid rgba(192,120,48,.3);color:var(--c2);padding:12px 20px;border-radius:8px;font-size:.78rem;z-index:2000;transform:translateY(70px);opacity:0;transition:all .3s;max-width:300px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
-    #toast.show{transform:translateY(0);opacity:1}
-    #toast.err{border-color:var(--danger);color:#f1948a}
-    #toast.ok{border-color:var(--ok);color:#a8e6c0}
+/* Toggle */
+.trow{display:flex;align-items:center;gap:12px}
+.tog{position:relative;width:40px;height:21px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.ts{position:absolute;inset:0;background:rgba(192,120,48,.18);border-radius:22px;cursor:pointer;transition:.25s;border:1px solid rgba(192,120,48,.24)}
+.ts:before{content:'';position:absolute;width:15px;height:15px;bottom:2px;left:2px;background:var(--mu);border-radius:50%;transition:.25s}
+.tog input:checked+.ts{background:var(--ac);border-color:var(--ac)}
+.tog input:checked+.ts:before{transform:translateX(19px);background:#fff}
 
-    .div{height:1px;background:rgba(192,120,48,.1);margin:22px 0}
-    .pbox{background:var(--bg2);border:1px solid rgba(192,120,48,.12);border-radius:8px;padding:24px;max-width:440px}
-    .pbox h3{font-family:var(--fs);font-size:1.1rem;color:var(--c2);margin-bottom:16px}
-    .empty-st{text-align:center;padding:46px 20px;color:var(--muted);font-size:.82rem}
+/* Saving bar */
+#savebar{position:fixed;top:0;left:0;right:0;background:var(--ac);color:var(--bg);font-size:.68rem;font-weight:700;letter-spacing:2px;text-align:center;padding:6px;z-index:2000;display:none}
+#savebar.on{display:block}
 
-    /* LOADING SPINNER */
-    .spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(192,120,48,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-    @keyframes spin{to{transform:rotate(360deg)}}
+/* Toast */
+#toast{position:fixed;bottom:22px;right:22px;background:var(--bg3);border:1px solid rgba(192,120,48,.3);color:var(--cr2);padding:11px 17px;border-radius:7px;font-size:.76rem;z-index:3000;transform:translateY(60px);opacity:0;transition:all .28s;max-width:270px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#toast.on{transform:translateY(0);opacity:1}
+#toast.err{border-color:var(--red);color:#f1948a}
 
-    @media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:680px){.sb{display:none}.main{padding:20px 14px}}
-    @media(max-width:480px){.fr2{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
-  </style>
+.empty-st{text-align:center;padding:40px 20px;color:var(--mu);font-size:.8rem}
+.hr{height:1px;background:rgba(192,120,48,.1);margin:20px 0}
+.pbox{background:var(--bg2);border:1px solid rgba(192,120,48,.12);border-radius:8px;padding:22px;max-width:420px;margin-bottom:18px}
+.pbox h3{font-family:var(--sf);font-size:1.05rem;color:var(--cr2);margin-bottom:14px}
+
+@media(max-width:880px){.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.sidebar{display:none}.main{padding:16px 13px}}
+@media(max-width:460px){.fr2{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="ls">
-  <div class="lb">
-    <img src="logo.jpg" alt="UD" onerror="this.style.display='none'"/>
+<div id="savebar">⟳ SAVING TO CLOUD…</div>
+
+<!-- ════ LOGIN ════ -->
+<div id="scrLogin" class="scr on">
+  <div class="lbox">
+    <img src="logo.jpg" onerror="this.style.display='none'"/>
     <h1>Admin Panel</h1>
-    <p>Upscale Drip</p>
-    <input class="f" type="text" id="lu" placeholder="Username" autocomplete="off"/>
-    <input class="f" type="password" id="lp" placeholder="Password"/>
+    <p class="sub">Upscale Drip</p>
+    <input id="lu" type="text" placeholder="Username" autocomplete="off"/>
+    <input id="lp" type="password" placeholder="Password"/>
     <button class="btn btn-full" onclick="doLogin()">Sign In →</button>
-    <p id="le"></p>
+    <p id="lerr"></p>
   </div>
 </div>
 
-<!-- ADMIN -->
-<div id="as">
-  <div class="wrap">
-    <!-- SIDEBAR -->
-    <aside class="sb">
-      <div class="sb-top">
-        <img src="logo.jpg" alt="UD" onerror="this.style.display='none'"/>
-        <div><strong>Upscale Drip</strong><span>Admin</span></div>
-      </div>
-      <nav class="sb-nav">
-        <div class="si on" data-pg="dash">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
-        </div>
-        <div class="si" data-pg="prods">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>Products
-        </div>
-        <div class="si" data-pg="add">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Add Product
-        </div>
-        <div class="si" data-pg="setup">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Setup / Settings
-        </div>
-      </nav>
-      <div class="sb-ft">
-        <a href="index.html" target="_blank">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>View Live Site
-        </a>
-        <a href="#" onclick="logout()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout
-        </a>
-      </div>
-    </aside>
+<!-- ════ SETUP ════ -->
+<div id="scrSetup" class="scr">
+  <div class="sbox">
+    <h1>Cloud Setup</h1>
+    <p class="stag">Connect your free cloud database — one time only</p>
 
-    <!-- MAIN -->
-    <main class="main">
+    <div class="info-panel">
+      Your site is on GitHub Pages (no server). We use <strong>JSONBin.io</strong> — a free cloud storage — so products sync to <strong>every device worldwide</strong>. Takes 2 minutes.
+    </div>
 
-      <!-- DASHBOARD -->
-      <div class="pg on" id="pg-dash">
-        <h1 class="pt">Dashboard</h1>
-        <p class="ps">Welcome back, Admin</p>
-        <div class="stats" id="dStats"></div>
-        <div class="tb">
-          <div class="tbar"><h3>Recent Products</h3><button class="btn btn-sm" onclick="nav('add')">+ Add Product</button></div>
-          <div id="dRecent"></div>
-        </div>
-      </div>
+    <ul class="steps">
+      <li>Go to <a href="https://jsonbin.io" target="_blank"><b>jsonbin.io</b></a> and <b>create a free account</b></li>
+      <li>Click <b>API Keys</b> in the top menu → copy your <b>Master Key</b> (starts with <code>$2b$</code>)</li>
+      <li>Click <b>Bins</b> → <b>Create Bin</b> → paste <code>{"products":[]}</code> → click <b>Create</b></li>
+      <li>Copy the <b>Bin ID</b> that appears (looks like <code>64abc123ef456</code>)</li>
+      <li>Paste both fields below and click <b>Connect</b></li>
+    </ul>
 
-      <!-- PRODUCTS -->
-      <div class="pg" id="pg-prods">
-        <h1 class="pt">Products</h1>
-        <p class="ps">Manage your catalogue</p>
-        <div class="tb">
-          <div class="tbar">
-            <h3>All Products (<span id="pCount">0</span>)</h3>
-            <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-              <div class="chips" id="catChips">
-                <button class="ch on" data-c="all">All</button>
-                <button class="ch" data-c="panjabi">Panjabi</button>
-                <button class="ch" data-c="shirt">Shirts</button>
-                <button class="ch" data-c="polo">Polo</button>
-                <button class="ch" data-c="jacket">Jackets</button>
-                <button class="ch" data-c="trouser">Trousers</button>
-              </div>
-              <button class="btn btn-sm" onclick="nav('add')">+ Add</button>
-            </div>
-          </div>
-          <div id="pTbl"></div>
-        </div>
-      </div>
-
-      <!-- ADD PRODUCT -->
-      <div class="pg" id="pg-add">
-        <h1 class="pt">Add Product</h1>
-        <p class="ps">Upload a new item</p>
-        <div id="noSetupWarn" style="display:none;background:rgba(192,120,48,.08);border:1px solid rgba(192,120,48,.3);border-radius:8px;padding:16px 20px;margin-bottom:20px;font-size:.82rem;color:var(--a2)">
-          ⚠ Supabase is not connected yet. <a href="#" onclick="nav('setup')" style="color:var(--accent);text-decoration:underline">Go to Setup →</a>
-        </div>
-        <div style="background:var(--bg2);border:1px solid rgba(192,120,48,.12);border-radius:8px;padding:28px;max-width:600px">
-          <div class="fr2">
-            <div class="fg"><label>Product Name *</label><input class="f" id="fn" placeholder="e.g. Short Panjabi — Sand White"/></div>
-            <div class="fg"><label>Category *</label>
-              <select class="f" id="fc">
-                <option value="">— Select —</option>
-                <option value="panjabi">Panjabi</option>
-                <option value="shirt">Shirt</option>
-                <option value="polo">Polo</option>
-                <option value="jacket">Jacket</option>
-                <option value="trouser">Trouser</option>
-              </select>
-            </div>
-          </div>
-          <div class="fg"><label>Price (৳) *</label><input class="f" type="number" id="fpr" placeholder="e.g. 3200" min="1"/></div>
-          <div class="fg"><label>Description</label><textarea class="f" id="fd" rows="3" placeholder="Short product description..."></textarea></div>
-          <div class="fg">
-            <label>Product Image URL *</label>
-            <input class="f" type="url" id="fi" placeholder="https://images.unsplash.com/..." oninput="pv('fi','fip')"/>
-            <img id="fip" class="ip" alt="Preview"/>
-          </div>
-          <div class="fg"><label>Sizes (comma separated)</label><input class="f" id="fsz" placeholder="S, M, L, XL, XXL"/></div>
-          <div class="fg">
-            <label>New Arrival Badge</label>
-            <div class="trow">
-              <label class="tog"><input type="checkbox" id="fnw"/><span class="ts"></span></label>
-              <span class="tl">Show "New" badge on product</span>
-            </div>
-          </div>
-          <div class="fa">
-            <button class="btn" onclick="addProd()" id="addBtn">✓ Save Product</button>
-            <button class="btn btn-g" onclick="clearAdd()">Clear</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- SETUP -->
-      <div class="pg" id="pg-setup">
-        <h1 class="pt">Setup & Settings</h1>
-        <p class="ps">Connect your Supabase database</p>
-
-        <div class="setup-box">
-          <h3>🗄 Supabase Database Setup</h3>
-          <p class="hint">Supabase is a free cloud database. Once set up, your products will show on the website from <strong>any device, anywhere</strong>. Follow these steps once:</p>
-
-          <div class="step"><div class="step-num">1</div><div class="step-text">Go to <a href="https://supabase.com" target="_blank">supabase.com</a> → Sign up free → Create a new project (pick any name, e.g. "upscale-drip")</div></div>
-          <div class="step"><div class="step-num">2</div><div class="step-text">In your project, go to <strong>SQL Editor</strong> and run this SQL to create the products table:<br/><br/>
-            <code>CREATE TABLE products (
-  id BIGSERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  cat TEXT NOT NULL,
-  img TEXT NOT NULL,
-  price INTEGER NOT NULL,
-  desc TEXT,
-  isnew BOOLEAN DEFAULT false,
-  sizes JSONB DEFAULT '[]'
-);
-ALTER TABLE products ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public read" ON products FOR SELECT USING (true);
-CREATE POLICY "Service write" ON products FOR ALL USING (true);</code>
-          </div></div>
-          <div class="step"><div class="step-num">3</div><div class="step-text">Go to <strong>Project Settings → API</strong>. Copy your <strong>Project URL</strong> and <strong>anon/public key</strong>. Paste them below:</div></div>
-
-          <div id="connStatus" class="conn-status conn-none"><div class="dot dot-none"></div><span id="connMsg">Not connected</span></div>
-
-          <div class="fg"><label>Supabase Project URL</label><input class="f" id="sbUrl" placeholder="https://xxxxxxxxxxxx.supabase.co"/></div>
-          <div class="fg"><label>Supabase Anon Key</label><input class="f" id="sbKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."/></div>
-          <div style="display:flex;gap:9px;flex-wrap:wrap">
-            <button class="btn btn-info" onclick="testConn()"><span id="testSpin" style="display:none" class="spin"></span>Test Connection</button>
-            <button class="btn btn-ok" onclick="saveConn()">Save & Apply</button>
-          </div>
-
-          <div class="div"></div>
-          <h3 style="font-family:var(--fs);font-size:1.1rem;color:var(--c2);margin-bottom:10px">Seed Default Products</h3>
-          <p style="font-size:.78rem;color:var(--muted);margin-bottom:14px">After connecting, click this once to populate your database with the 16 default products.</p>
-          <button class="btn btn-ok" onclick="seedDefaults()" id="seedBtn">⬆ Seed 16 Default Products</button>
-        </div>
-
-        <div class="div"></div>
-
-        <div class="pbox">
-          <h3>Change Admin Password</h3>
-          <div class="fg"><label>Current Password</label><input class="f" type="password" id="cp"/></div>
-          <div class="fg"><label>New Password</label><input class="f" type="password" id="np"/></div>
-          <div class="fg"><label>Confirm New Password</label><input class="f" type="password" id="cnp"/></div>
-          <button class="btn btn-ok" onclick="changePwd()">Update Password</button>
-        </div>
-      </div>
-
-    </main>
+    <div class="fg"><label>Master Key *</label><input class="f" id="sKey" placeholder="$2b$10$xxxxxxxxxxxxxxxxxxxxxx..."/></div>
+    <div class="fg"><label>Bin ID *</label><input class="f" id="sBin" placeholder="64abc123ef456..."/></div>
+    <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap">
+      <button class="btn btn-blu" id="connectBtn" onclick="testCloud()">🔗 Connect</button>
+      <button class="btn btn-g" onclick="skipCloud()">Skip (no cloud)</button>
+    </div>
+    <p id="setupErr"></p>
   </div>
+</div>
+
+<!-- ════ ADMIN ════ -->
+<div id="scrAdmin" class="scr">
+  <aside class="sidebar">
+    <div class="sb-top">
+      <img src="logo.jpg" onerror="this.style.display='none'"/>
+      <div><strong>Upscale Drip</strong><span>Admin</span></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="si on" data-pg="dash">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="si" data-pg="prods">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Products
+      </div>
+      <div class="si" data-pg="add">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Add Product
+      </div>
+      <div class="si" data-pg="settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </div>
+    </nav>
+    <div class="sb-foot">
+      <a href="index.html" target="_blank">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Live Site
+      </a>
+      <a href="#" onclick="logout()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="pg on" id="pg-dash">
+      <h1 class="ptitle">Dashboard</h1>
+      <p class="psub">Overview</p>
+      <div id="cloudBadge"></div>
+      <div style="margin-bottom:20px"><button class="btn btn-g btn-sm" onclick="reconfig()" style="margin-right:10px">⚙ Setup Cloud Database</button><span style="font-size:.72rem;color:var(--mu)">Connect JSONBin to sync products across all devices</span></div>
+      <div class="stats" id="dashStats"></div>
+      <div class="tbox">
+        <div class="tbar"><h3>Recent Products</h3><button class="btn btn-sm" onclick="nav('add')">+ Add Product</button></div>
+        <div id="recentTbl"></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="pg" id="pg-prods">
+      <h1 class="ptitle">Products</h1>
+      <p class="psub">Full catalogue</p>
+      <div class="tbox">
+        <div class="tbar">
+          <h3>All Products (<span id="prodCount">0</span>)</h3>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div class="chips" id="catChips">
+              <button class="chip on" data-c="all">All</button>
+              <button class="chip" data-c="panjabi">Panjabi</button>
+              <button class="chip" data-c="shirt">Shirts</button>
+              <button class="chip" data-c="polo">Polo</button>
+              <button class="chip" data-c="jacket">Jackets</button>
+              <button class="chip" data-c="trouser">Trousers</button>
+            </div>
+            <button class="btn btn-sm" onclick="nav('add')">+ Add</button>
+          </div>
+        </div>
+        <div id="prodTbl"></div>
+      </div>
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div class="pg" id="pg-add">
+      <h1 class="ptitle">Add Product</h1>
+      <p class="psub">Upload to catalogue</p>
+      <div style="background:var(--bg2);border:1px solid rgba(192,120,48,.12);border-radius:8px;padding:26px;max-width:580px">
+        <div class="fr2">
+          <div class="fg"><label>Product Name *</label><input class="f" id="fn" placeholder="e.g. Short Panjabi — Sand White"/></div>
+          <div class="fg"><label>Category *</label>
+            <select class="f" id="fc">
+              <option value="">— Select Category —</option>
+              <option value="panjabi">Panjabi</option>
+              <option value="shirt">Shirt</option>
+              <option value="polo">Polo</option>
+              <option value="jacket">Jacket</option>
+              <option value="trouser">Trouser</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Price (৳) *</label><input class="f" type="number" id="fpr" placeholder="e.g. 3200" min="1"/></div>
+        <div class="fg"><label>Description</label><textarea class="f" id="fd" rows="3" placeholder="Short product description..."></textarea></div>
+        <div class="fg">
+          <label>Product Image URL *</label>
+          <input class="f" type="url" id="fi" placeholder="https://images.unsplash.com/photo-...?w=700&q=85" oninput="prev('fi','fip')"/>
+          <img id="fip" class="iprev" alt="Preview"/>
+        </div>
+        <div class="fg"><label>Sizes (comma separated)</label><input class="f" id="fsz" placeholder="S, M, L, XL, XXL"/></div>
+        <div class="fg"><label>New Arrival Badge</label>
+          <div class="trow" style="margin-top:4px">
+            <label class="tog"><input type="checkbox" id="fnew"/><span class="ts"></span></label>
+            <span style="font-size:.8rem;color:var(--cr)">Show "New" badge on this product</span>
+          </div>
+        </div>
+        <div class="frow">
+          <button class="btn" onclick="addProd()">✓ Save Product</button>
+          <button class="btn btn-g" onclick="clearAdd()">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="pg" id="pg-settings">
+      <h1 class="ptitle">Settings</h1>
+      <p class="psub">Account & Cloud</p>
+
+      <div class="pbox">
+        <h3>Cloud Connection</h3>
+        <div id="cloudInfo" style="font-size:.78rem;color:var(--mu);margin-bottom:14px;line-height:1.9"></div>
+        <button class="btn btn-g btn-sm" onclick="reconfig()">Reconfigure Cloud</button>
+      </div>
+
+      <div class="pbox">
+        <h3>Change Password</h3>
+        <div class="fg"><label>Current Password</label><input class="f" type="password" id="cp"/></div>
+        <div class="fg"><label>New Password</label><input class="f" type="password" id="np"/></div>
+        <div class="fg"><label>Confirm New Password</label><input class="f" type="password" id="cnp"/></div>
+        <button class="btn btn-grn" onclick="changePwd()">Update Password</button>
+      </div>
+
+      <div class="pbox">
+        <h3>Danger Zone</h3>
+        <p style="font-size:.76rem;color:var(--mu);margin-bottom:14px">Reset everything back to the original 16 default products. Overwrites cloud data too.</p>
+        <button class="btn btn-r" onclick="resetAll()">⚠ Reset All Products</button>
+      </div>
+    </div>
+
+  </main>
 </div>
 
 <!-- EDIT MODAL -->
 <div class="ov" id="eOv" onclick="closeEdit()"></div>
-<div class="fm" id="eMod">
-  <div class="mh"><h2>Edit Product</h2><button onclick="closeEdit()">✕</button></div>
+<div class="fmod" id="eMod">
+  <div class="mhd"><h2>Edit Product</h2><button onclick="closeEdit()">✕</button></div>
   <div class="fr2">
     <div class="fg"><label>Name *</label><input class="f" id="en"/></div>
     <div class="fg"><label>Category *</label>
       <select class="f" id="ec">
-        <option value="panjabi">Panjabi</option>
-        <option value="shirt">Shirt</option>
-        <option value="polo">Polo</option>
-        <option value="jacket">Jacket</option>
-        <option value="trouser">Trouser</option>
+        <option value="panjabi">Panjabi</option><option value="shirt">Shirt</option>
+        <option value="polo">Polo</option><option value="jacket">Jacket</option><option value="trouser">Trouser</option>
       </select>
     </div>
   </div>
@@ -366,19 +367,18 @@ CREATE POLICY "Service write" ON products FOR ALL USING (true);</code>
   <div class="fg"><label>Description</label><textarea class="f" id="ed" rows="3"></textarea></div>
   <div class="fg">
     <label>Image URL *</label>
-    <input class="f" type="url" id="ei" oninput="pv('ei','eip')"/>
-    <img id="eip" class="ip" alt="Preview"/>
+    <input class="f" type="url" id="ei" oninput="prev('ei','eip')"/>
+    <img id="eip" class="iprev" alt=""/>
   </div>
   <div class="fg"><label>Sizes (comma separated)</label><input class="f" id="esz"/></div>
-  <div class="fg">
-    <label>New Arrival</label>
-    <div class="trow">
-      <label class="tog"><input type="checkbox" id="enw"/><span class="ts"></span></label>
-      <span class="tl">Show "New" badge</span>
+  <div class="fg"><label>New Arrival</label>
+    <div class="trow" style="margin-top:4px">
+      <label class="tog"><input type="checkbox" id="enew"/><span class="ts"></span></label>
+      <span style="font-size:.8rem;color:var(--cr)">Show "New" badge</span>
     </div>
   </div>
-  <div class="fa">
-    <button class="btn" onclick="saveEdit()" id="saveEditBtn">✓ Save Changes</button>
+  <div class="frow">
+    <button class="btn" onclick="saveEdit()">✓ Save Changes</button>
     <button class="btn btn-g" onclick="closeEdit()">Cancel</button>
   </div>
 </div>
@@ -386,363 +386,316 @@ CREATE POLICY "Service write" ON products FOR ALL USING (true);</code>
 <div id="toast"></div>
 
 <script>
-// ════════════════════════════════════════
-//  AUTH
-// ════════════════════════════════════════
-const CK='ud_creds';
-const getCreds=()=>{const r=localStorage.getItem(CK);return r?JSON.parse(r):{user:'upscaledrip',pass:'UD@Admin2026'};};
-function doLogin(){
-  const u=document.getElementById('lu').value.trim();
-  const p=document.getElementById('lp').value;
-  const c=getCreds();
-  if(u===c.user&&p===c.pass){sessionStorage.setItem('ud_ok','1');boot();}
-  else{const e=document.getElementById('le');e.textContent='Incorrect credentials.';setTimeout(()=>e.textContent='',3000);}
-}
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('ls').style.display!=='none')doLogin();});
-function logout(){sessionStorage.removeItem('ud_ok');document.getElementById('as').style.display='none';document.getElementById('ls').style.display='flex';}
-function boot(){
-  document.getElementById('ls').style.display='none';
-  document.getElementById('as').style.display='block';
-  loadConn();
-  refreshAll();
-}
-window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('ud_ok')==='1')boot();});
+const JB = 'https://api.jsonbin.io/v3/b';
+const CKEY = 'ud_creds';
+const getCreds = () => { const r = localStorage.getItem(CKEY); return r ? JSON.parse(r) : {user:'upscaledrip',pass:'UD@Admin2026'}; };
+const getKey   = () => localStorage.getItem('ud_api_key') || '';
+const getBin   = () => localStorage.getItem('ud_bin_id')  || '';
 
-// ════════════════════════════════════════
-//  SUPABASE CONNECTION
-// ════════════════════════════════════════
-let SB_URL='', SB_KEY='';
-
-function loadConn(){
-  SB_URL=localStorage.getItem('ud_sb_url')||'';
-  SB_KEY=localStorage.getItem('ud_sb_key')||'';
-  if(SB_URL) document.getElementById('sbUrl').value=SB_URL;
-  if(SB_KEY) document.getElementById('sbKey').value=SB_KEY;
-  updateConnStatus(SB_URL&&SB_KEY?'ok':'none');
-  // Show/hide no-setup warning
-  document.getElementById('noSetupWarn').style.display=(!SB_URL||!SB_KEY)?'block':'none';
-}
-
-function updateConnStatus(state,msg){
-  const el=document.getElementById('connStatus');
-  const dot=el.querySelector('.dot');
-  const txt=document.getElementById('connMsg');
-  el.className='conn-status';
-  dot.className='dot';
-  if(state==='ok'){el.classList.add('conn-ok');dot.classList.add('dot-ok');txt.textContent=msg||'Connected to Supabase ✓';}
-  else if(state==='err'){el.classList.add('conn-err');dot.classList.add('dot-err');txt.textContent=msg||'Connection failed';}
-  else{el.classList.add('conn-none');dot.classList.add('dot-none');txt.textContent=msg||'Not connected — enter credentials below';}
-}
-
-async function sbFetch(path,opts={}){
-  const res=await fetch(`${SB_URL}/rest/v1/${path}`,{
-    headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})},
-    ...opts
-  });
-  return res;
-}
-
-async function testConn(){
-  const url=document.getElementById('sbUrl').value.trim();
-  const key=document.getElementById('sbKey').value.trim();
-  if(!url||!key){toast('Enter URL and key first.','err');return;}
-  document.getElementById('testSpin').style.display='inline-block';
-  try{
-    const res=await fetch(`${url}/rest/v1/products?select=id&limit=1`,{
-      headers:{'apikey':key,'Authorization':`Bearer ${key}`}
-    });
-    if(res.ok){
-      updateConnStatus('ok','Connection successful ✓');
-      toast('✓ Connection works!','ok');
-    } else {
-      const txt=await res.text();
-      updateConnStatus('err',`Error ${res.status} — check your URL and key`);
-      toast('Connection failed. Check credentials.','err');
-    }
-  }catch(e){updateConnStatus('err','Network error — check URL');toast('Network error.','err');}
-  document.getElementById('testSpin').style.display='none';
-}
-
-function saveConn(){
-  const url=document.getElementById('sbUrl').value.trim();
-  const key=document.getElementById('sbKey').value.trim();
-  if(!url||!key){toast('Both URL and key are required.','err');return;}
-  // Save to localStorage
-  localStorage.setItem('ud_sb_url',url);
-  localStorage.setItem('ud_sb_key',key);
-  SB_URL=url; SB_KEY=key;
-  // ALSO update the script.js config vars on the main site via a special localStorage key
-  // script.js reads window.__UD_SUPABASE_URL__ which we set via a config stored in localStorage
-  localStorage.setItem('ud_sb_config',JSON.stringify({url,key}));
-  document.getElementById('noSetupWarn').style.display='none';
-  updateConnStatus('ok');
-  toast('✓ Saved! Now update script.js with these credentials (see instructions).','ok');
-  // Show the update instructions
-  showScriptInstructions(url,key);
-}
-
-function showScriptInstructions(url,key){
-  const existing=document.getElementById('scriptInstr');
-  if(existing)existing.remove();
-  const box=document.createElement('div');
-  box.id='scriptInstr';
-  box.style.cssText='background:rgba(41,128,185,.1);border:1px solid rgba(41,128,185,.3);border-radius:8px;padding:18px 20px;margin-top:16px;font-size:.8rem;color:var(--c2);line-height:1.8';
-  box.innerHTML=`<strong style="color:#5dade2">📋 Final step — update script.js</strong><br/>
-Open your <code style="background:rgba(255,255,255,.08);padding:2px 6px;border-radius:3px">script.js</code> file and find these two lines near the top:<br/>
-<code style="display:block;background:rgba(0,0,0,.3);padding:10px 12px;border-radius:4px;margin:10px 0;font-family:monospace;font-size:.76rem;white-space:pre-wrap">const SUPABASE_URL = window.__UD_SUPABASE_URL__ || '';
-const SUPABASE_KEY = window.__UD_SUPABASE_KEY__ || '';</code>
-Replace them with:<br/>
-<code style="display:block;background:rgba(0,0,0,.3);padding:10px 12px;border-radius:4px;margin:10px 0;font-family:monospace;font-size:.76rem;white-space:pre-wrap;word-break:break-all">const SUPABASE_URL = '${url}';
-const SUPABASE_KEY = '${key}';</code>
-Then re-upload <code>script.js</code> to GitHub. That's it — products will load on all devices! 🎉`;
-  document.getElementById('pg-setup').querySelector('.setup-box').appendChild(box);
-}
-
-// ════════════════════════════════════════
-//  PRODUCT CRUD (Supabase REST API)
-// ════════════════════════════════════════
-async function getAllProducts(){
-  if(!SB_URL||!SB_KEY)return[];
-  const res=await sbFetch('products?select=*&order=id.asc');
-  if(!res.ok)return[];
-  return await res.json();
-}
-
-async function createProduct(p){
-  const res=await sbFetch('products',{method:'POST',body:JSON.stringify(p)});
-  return res.ok;
-}
-
-async function updateProduct(id,p){
-  const res=await sbFetch(`products?id=eq.${id}`,{method:'PATCH',body:JSON.stringify(p)});
-  return res.ok;
-}
-
-async function deleteProduct(id){
-  const res=await sbFetch(`products?id=eq.${id}`,{method:'DELETE'});
-  return res.ok;
-}
-
-// ════════════════════════════════════════
-//  SEED DEFAULTS
-// ════════════════════════════════════════
-const DEFS=[
-  {name:"Short Panjabi — Sand White",cat:"panjabi",img:"https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?w=700&q=85",price:3200,desc:"Premium cotton short panjabi with hand-finished collar embroidery.",isnew:true,sizes:["S","M","L","XL","XXL"]},
-  {name:"Premium Linen Shirt — Natural Beige",cat:"shirt",img:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=700&q=85",price:1800,desc:"Pure linen blend, relaxed fit, breathable for warm days.",isnew:true,sizes:["S","M","L","XL","XXL"]},
-  {name:"Premium Polo Shirt — Coffee Brown",cat:"polo",img:"https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=700&q=85",price:2400,desc:"Fine piqué cotton polo in our signature coffee colorway.",isnew:true,sizes:["S","M","L","XL","XXL"]},
-  {name:"Oxford Button-Down Shirt — White",cat:"shirt",img:"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=700&q=85",price:1800,desc:"Classic Oxford weave, slim modern fit.",isnew:true,sizes:["S","M","L","XL","XXL"]},
-  {name:"Short Panjabi — Olive Green",cat:"panjabi",img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&q=85",price:3200,desc:"Soft premium cotton in rich olive green.",isnew:false,sizes:["S","M","L","XL","XXL"]},
-  {name:"Short Panjabi — Charcoal Black",cat:"panjabi",img:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=700&q=85",price:3200,desc:"Elegant charcoal black short panjabi.",isnew:false,sizes:["S","M","L","XL","XXL"]},
-  {name:"Linen Shirt — Slate Blue",cat:"shirt",img:"https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=700&q=85",price:1800,desc:"Relaxed slate blue linen shirt.",isnew:false,sizes:["S","M","L","XL","XXL"]},
-  {name:"Cuban Collar Shirt — Brown",cat:"shirt",img:"https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=700&q=85",price:1800,desc:"Relaxed open collar, short sleeves.",isnew:false,sizes:["S","M","L","XL","XXL"]},
-  {name:"Classic Polo — Navy Blue",cat:"polo",img:"https://images.unsplash.com/photo-1571455786673-9d9d6c194f90?w=700&q=85",price:2400,desc:"Premium piqué cotton in deep navy.",isnew:false,sizes:["S","M","L","XL","XXL"]},
-  {name:"Striped Polo — Cream & Brown",cat:"polo",img:"https://images.unsplash.com/photo-1622445275576-721325763afe?w=700&q=85",price:2400,desc:"Subtle horizontal stripes.",isnew:false,sizes:["S","M","L","XL","XXL"]},
-  {name:"Tailored Drip Trousers — Cream",cat:"trouser",img:"https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=700&q=85",price:2200,desc:"High-waist tapered cut trousers.",isnew:false,sizes:["28","30","32","34","36"]},
-  {name:"Slim Chino Trousers — Khaki",cat:"trouser",img:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=700&q=85",price:2200,desc:"Premium cotton twill in slim cut.",isnew:false,sizes:["28","30","32","34","36"]},
-  {name:"Cargo Utility Trousers — Black",cat:"trouser",img:"https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=700&q=85",price:2500,desc:"8-pocket utility design.",isnew:false,sizes:["28","30","32","34","36"]},
-  {name:"Varsity Bomber Jacket — Black",cat:"jacket",img:"https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=700&q=85",price:4200,desc:"Ribbed cuffs and hem, satin lining.",isnew:false,sizes:["S","M","L","XL"]},
-  {name:"Onyx Trench Coat",cat:"jacket",img:"https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700&q=85",price:5200,desc:"Double-breasted full-length trench.",isnew:false,sizes:["S","M","L","XL"]},
-  {name:"Structured Blazer — Camel",cat:"jacket",img:"https://images.unsplash.com/photo-1548778052-311f4bc2b502?w=700&q=85",price:3800,desc:"Sharp camel blazer with structured shoulders.",isnew:false,sizes:["S","M","L","XL"]},
+// ── DEFAULT PRODUCTS ──
+const DEF = [
+  {id:1,name:"Short Panjabi — Sand White",cat:"panjabi",img:"https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?w=700&q=85",price:3200,desc:"Premium cotton short panjabi with hand-finished collar embroidery.",isNew:true,sizes:["S","M","L","XL","XXL"]},
+  {id:2,name:"Premium Linen Shirt — Natural Beige",cat:"shirt",img:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=700&q=85",price:1800,desc:"Pure linen blend, relaxed fit.",isNew:true,sizes:["S","M","L","XL","XXL"]},
+  {id:3,name:"Premium Polo Shirt — Coffee Brown",cat:"polo",img:"https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=700&q=85",price:2400,desc:"Fine piqué cotton polo in our signature coffee colorway.",isNew:true,sizes:["S","M","L","XL","XXL"]},
+  {id:4,name:"Oxford Button-Down Shirt — White",cat:"shirt",img:"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=700&q=85",price:1800,desc:"Classic Oxford weave, slim modern fit.",isNew:true,sizes:["S","M","L","XL","XXL"]},
+  {id:5,name:"Short Panjabi — Olive Green",cat:"panjabi",img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&q=85",price:3200,desc:"Soft premium cotton in rich olive green.",isNew:false,sizes:["S","M","L","XL","XXL"]},
+  {id:6,name:"Short Panjabi — Charcoal Black",cat:"panjabi",img:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=700&q=85",price:3200,desc:"Elegant charcoal black short panjabi.",isNew:false,sizes:["S","M","L","XL","XXL"]},
+  {id:7,name:"Linen Shirt — Slate Blue",cat:"shirt",img:"https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=700&q=85",price:1800,desc:"Relaxed slate blue linen shirt.",isNew:false,sizes:["S","M","L","XL","XXL"]},
+  {id:8,name:"Cuban Collar Shirt — Brown",cat:"shirt",img:"https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=700&q=85",price:1800,desc:"Relaxed open collar, short sleeves.",isNew:false,sizes:["S","M","L","XL","XXL"]},
+  {id:9,name:"Classic Polo — Navy Blue",cat:"polo",img:"https://images.unsplash.com/photo-1571455786673-9d9d6c194f90?w=700&q=85",price:2400,desc:"Premium piqué cotton in deep navy.",isNew:false,sizes:["S","M","L","XL","XXL"]},
+  {id:10,name:"Striped Polo — Cream & Brown",cat:"polo",img:"https://images.unsplash.com/photo-1622445275576-721325763afe?w=700&q=85",price:2400,desc:"Subtle horizontal stripes.",isNew:false,sizes:["S","M","L","XL","XXL"]},
+  {id:11,name:"Tailored Drip Trousers — Cream",cat:"trouser",img:"https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=700&q=85",price:2200,desc:"High-waist tapered cut trousers.",isNew:false,sizes:["28","30","32","34","36"]},
+  {id:12,name:"Slim Chino Trousers — Khaki",cat:"trouser",img:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=700&q=85",price:2200,desc:"Premium cotton twill in slim cut.",isNew:false,sizes:["28","30","32","34","36"]},
+  {id:13,name:"Cargo Utility Trousers — Black",cat:"trouser",img:"https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=700&q=85",price:2500,desc:"8-pocket utility design.",isNew:false,sizes:["28","30","32","34","36"]},
+  {id:14,name:"Varsity Bomber Jacket — Black",cat:"jacket",img:"https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=700&q=85",price:4200,desc:"Ribbed cuffs and hem, satin lining.",isNew:false,sizes:["S","M","L","XL"]},
+  {id:15,name:"Onyx Trench Coat",cat:"jacket",img:"https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700&q=85",price:5200,desc:"Double-breasted full-length trench.",isNew:false,sizes:["S","M","L","XL"]},
+  {id:16,name:"Structured Blazer — Camel",cat:"jacket",img:"https://images.unsplash.com/photo-1548778052-311f4bc2b502?w=700&q=85",price:3800,desc:"Sharp camel blazer with structured shoulders.",isNew:false,sizes:["S","M","L","XL"]},
 ];
 
-async function seedDefaults(){
-  if(!SB_URL||!SB_KEY){toast('Connect Supabase first (Setup tab).','err');return;}
-  if(!confirm('This will insert the 16 default products into your database. Continue?'))return;
-  const btn=document.getElementById('seedBtn');
-  btn.innerHTML='<span class="spin"></span> Seeding...';btn.disabled=true;
-  const payload=DEFS.map(p=>({...p,sizes:JSON.stringify(p.sizes)}));
-  const res=await sbFetch('products',{method:'POST',body:JSON.stringify(payload)});
-  btn.innerHTML='⬆ Seed 16 Default Products';btn.disabled=false;
-  if(res.ok){toast('✓ 16 products added to database!','ok');refreshAll();}
-  else{const err=await res.text();toast('Seed failed: '+err,'err');}
+// ── AUTH ──
+function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  const c = getCreds();
+  if (u === c.user && p === c.pass) {
+    sessionStorage.setItem('ud_ok','1');
+    afterLogin();
+  } else {
+    const e = document.getElementById('lerr');
+    e.textContent = 'Incorrect username or password.';
+    setTimeout(() => e.textContent = '', 3000);
+  }
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('scrLogin').classList.contains('on')) doLogin();
+});
+function logout() { sessionStorage.removeItem('ud_ok'); show('scrLogin'); }
+
+function afterLogin() {
+  const key = getKey();
+  const bin = getBin();
+  // Valid JSONBin key starts with $2b$, valid bin is a hex string
+  const validKey = key && key.startsWith('$2b$');
+  const validBin = bin && bin.length > 10 && !bin.includes('supabase') && !bin.includes('http');
+  if (!validKey || !validBin) {
+    localStorage.removeItem('ud_api_key');
+    localStorage.removeItem('ud_bin_id');
+    show('scrSetup');
+  } else {
+    bootAdmin();
+  }
 }
 
-// ════════════════════════════════════════
-//  RENDER
-// ════════════════════════════════════════
-let curCat='all';
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('ud_ok') === '1') afterLogin();
+});
 
-async function refreshAll(){
-  await renderDash();
-  await renderProds(curCat);
+// ── SETUP ──
+async function testCloud() {
+  const key = document.getElementById('sKey').value.trim();
+  const bin = document.getElementById('sBin').value.trim();
+  const err = document.getElementById('setupErr');
+  err.style.color = ''; err.textContent = '';
+  if (!key || !bin) { err.textContent = 'Both fields are required.'; return; }
+  const btn = document.getElementById('connectBtn');
+  btn.textContent = 'Testing…'; btn.disabled = true;
+  try {
+    const r = await fetch(`${JB}/${bin}/latest`, { headers: { 'X-Master-Key': key } });
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' — check your Bin ID and Master Key');
+    localStorage.setItem('ud_api_key', key);
+    localStorage.setItem('ud_bin_id', bin);
+    err.style.color = '#58d68d';
+    err.textContent = '✓ Connected! Loading admin…';
+    setTimeout(bootAdmin, 1000);
+  } catch(e) {
+    err.textContent = '✗ ' + e.message;
+  } finally {
+    btn.textContent = '🔗 Connect';
+    btn.disabled = false;
+  }
+}
+function skipCloud() {
+  localStorage.removeItem('ud_api_key');
+  localStorage.removeItem('ud_bin_id');
+  bootAdmin();
+}
+function reconfig() {
+  // Pre-fill if already set
+  const k = localStorage.getItem('ud_api_key') || '';
+  const b = localStorage.getItem('ud_bin_id')  || '';
+  document.getElementById('sKey').value = k;
+  document.getElementById('sBin').value = b;
+  document.getElementById('setupErr').textContent = '';
+  show('scrSetup');
 }
 
-async function renderDash(){
-  const prods=await getAllProducts();
-  document.getElementById('dStats').innerHTML=`
-    <div class="sc"><div class="sc-l">Total Products</div><div class="sc-v">${prods.length}</div><div class="sc-s">In catalogue</div></div>
-    <div class="sc"><div class="sc-l">New Arrivals</div><div class="sc-v">${prods.filter(p=>p.isnew).length}</div><div class="sc-s">Marked as new</div></div>
-    <div class="sc"><div class="sc-l">Categories</div><div class="sc-v">${['panjabi','shirt','polo','jacket','trouser'].filter(c=>prods.some(p=>p.cat===c)).length}</div><div class="sc-s">Active</div></div>
-    <div class="sc"><div class="sc-l">Avg Price</div><div class="sc-v">৳${Math.round(prods.reduce((s,p)=>s+p.price,0)/(prods.length||1)).toLocaleString()}</div><div class="sc-s">Per item</div></div>
+// ── CLOUD API ──
+async function cloudLoad() {
+  const key = getKey(), bin = getBin();
+  if (!key || !bin) return [...DEF];
+  try {
+    const r = await fetch(`${JB}/${bin}/latest`, { headers: { 'X-Master-Key': key } });
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    const p = d.record && d.record.products;
+    return (Array.isArray(p) && p.length) ? p : [...DEF];
+  } catch(e) { console.warn('Load failed:', e); return [...DEF]; }
+}
+
+async function cloudSave(products) {
+  const key = getKey(), bin = getBin();
+  if (!key || !bin) { toast('No cloud — changes not synced.', 'err'); return false; }
+  document.getElementById('savebar').classList.add('on');
+  try {
+    const r = await fetch(`${JB}/${bin}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': key },
+      body: JSON.stringify({ products })
+    });
+    if (!r.ok) throw new Error(r.status);
+    return true;
+  } catch(e) { toast('Cloud save failed: ' + e.message, 'err'); return false; }
+  finally { document.getElementById('savebar').classList.remove('on'); }
+}
+
+// ── BOOT ──
+let PRODS = [];
+let curCat = 'all';
+
+async function bootAdmin() {
+  show('scrAdmin');
+  PRODS = await cloudLoad();
+  renderDash();
+  renderProds('all');
+  renderSettings();
+  document.querySelectorAll('.si').forEach(s => s.addEventListener('click', () => nav(s.dataset.pg)));
+  document.getElementById('catChips').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (c) renderProds(c.dataset.c);
+  });
+}
+
+// ── NAV ──
+function nav(pg) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.si').forEach(s => s.classList.remove('on'));
+  document.getElementById('pg-' + pg).classList.add('on');
+  document.querySelectorAll('.si').forEach(s => { if (s.dataset.pg === pg) s.classList.add('on'); });
+  if (pg === 'dash') renderDash();
+  if (pg === 'prods') renderProds(curCat);
+}
+
+// ── DASHBOARD ──
+function renderDash() {
+  const hasCloud = !!(getKey() && getBin());
+  document.getElementById('cloudBadge').innerHTML = hasCloud
+    ? `<div class="cloud-badge cb-ok"><span class="dot"></span>Cloud connected — syncs to all devices</div>`
+    : `<div class="cloud-badge cb-warn"><span class="dot"></span>No cloud — <a href="#" onclick="reconfig()" style="text-decoration:underline;color:inherit">set up JSONBin</a> to sync across devices</div>`;
+  document.getElementById('dashStats').innerHTML = `
+    <div class="sc"><div class="sc-l">Total Products</div><div class="sc-v">${PRODS.length}</div><div class="sc-s">In catalogue</div></div>
+    <div class="sc"><div class="sc-l">New Arrivals</div><div class="sc-v">${PRODS.filter(p=>p.isNew).length}</div><div class="sc-s">Marked as new</div></div>
+    <div class="sc"><div class="sc-l">Categories</div><div class="sc-v">${['panjabi','shirt','polo','jacket','trouser'].filter(c=>PRODS.some(p=>p.cat===c)).length}</div><div class="sc-s">Active</div></div>
+    <div class="sc"><div class="sc-l">Avg Price</div><div class="sc-v">৳${Math.round(PRODS.reduce((s,p)=>s+p.price,0)/(PRODS.length||1)).toLocaleString()}</div><div class="sc-s">Per item</div></div>
   `;
-  document.getElementById('dRecent').innerHTML=prods.length?buildTbl([...prods].reverse().slice(0,6),false):'<div class="empty-st">No products yet. Go to Setup to connect Supabase, then Add Products.</div>';
+  document.getElementById('recentTbl').innerHTML = buildTbl([...PRODS].reverse().slice(0,6), false);
 }
 
-async function renderProds(cat){
-  curCat=cat;
-  document.querySelectorAll('.ch').forEach(c=>c.classList.toggle('on',c.dataset.c===cat));
-  const body=document.getElementById('pTbl');
-  body.innerHTML='<div class="empty-st"><span class="spin"></span> Loading...</div>';
-  const all=await getAllProducts();
-  const list=cat==='all'?all:all.filter(p=>p.cat===cat);
-  document.getElementById('pCount').textContent=list.length;
-  body.innerHTML=list.length?buildTbl(list,true):'<div class="empty-st">No products in this category.</div>';
+function renderSettings() {
+  const bin = getBin(), key = getKey();
+  document.getElementById('cloudInfo').innerHTML = bin
+    ? `<b style="color:var(--cr2)">Bin ID:</b> ${bin}<br><b style="color:var(--cr2)">Key:</b> ${key.slice(0,16)}…`
+    : 'Not configured. Products only show locally.';
 }
 
-function buildTbl(list,del){
-  return`<table>
-    <thead><tr><th></th><th>Name</th><th>Cat</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
-    <tbody>${list.map(p=>`<tr>
-      <td><img class="ti" src="${p.img}" onerror="this.style.opacity='.2'"/></td>
-      <td style="max-width:180px;font-size:.76rem;line-height:1.4">${p.name}</td>
-      <td><span class="bc">${p.cat}</span></td>
-      <td style="color:var(--accent);font-weight:600;white-space:nowrap">৳${Number(p.price).toLocaleString()}</td>
-      <td>${p.isnew?'<span class="bc bn">New</span>':'<span style="font-size:.66rem;color:var(--muted)">—</span>'}</td>
-      <td><div class="ta">
-        <button class="btn btn-sm" onclick="openEdit(${p.id})">Edit</button>
-        ${del?`<button class="btn btn-sm btn-d" onclick="delProd(${p.id})">Del</button>`:''}
-      </div></td>
-    </tr>`).join('')}</tbody></table>`;
+// ── PRODUCTS ──
+function renderProds(cat) {
+  curCat = cat || 'all';
+  const list = curCat === 'all' ? PRODS : PRODS.filter(p => p.cat === curCat);
+  document.getElementById('prodCount').textContent = list.length;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.c === curCat));
+  document.getElementById('prodTbl').innerHTML = list.length ? buildTbl(list, true) : '<div class="empty-st">No products in this category.</div>';
 }
 
-// ════════════════════════════════════════
-//  ADD PRODUCT
-// ════════════════════════════════════════
-function pv(inId,prevId){
-  const u=document.getElementById(inId).value.trim();
-  const el=document.getElementById(prevId);
-  el.src=u;el.classList.toggle('on',!!u);
+function buildTbl(list, del) {
+  return `<table><thead><tr><th></th><th>Name</th><th>Cat</th><th>Price</th><th>Sizes</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>${list.map(p=>`<tr>
+    <td><img class="tdimg" src="${p.img}" onerror="this.style.opacity='.15'"/></td>
+    <td style="max-width:155px;font-size:.74rem;line-height:1.4;color:var(--cr)">${p.name}</td>
+    <td><span class="bcat">${p.cat}</span></td>
+    <td style="color:var(--ac);font-weight:600;white-space:nowrap">৳${p.price.toLocaleString()}</td>
+    <td style="font-size:.64rem;color:var(--mu)">${(p.sizes||[]).join(', ')}</td>
+    <td>${p.isNew?'<span class="bcat bnew">New</span>':'<span style="font-size:.64rem;color:var(--mu)">—</span>'}</td>
+    <td><div class="tacts">
+      <button class="btn btn-sm" onclick="openEdit(${p.id})">Edit</button>
+      ${del?`<button class="btn btn-sm btn-r" onclick="delProd(${p.id})">Del</button>`:''}
+    </div></td>
+  </tr>`).join('')}</tbody></table>`;
 }
 
-async function addProd(){
-  if(!SB_URL||!SB_KEY){toast('Connect Supabase first (Setup tab).','err');nav('setup');return;}
-  const name=document.getElementById('fn').value.trim();
-  const cat=document.getElementById('fc').value;
-  const price=parseInt(document.getElementById('fpr').value);
-  const desc=document.getElementById('fd').value.trim();
-  const img=document.getElementById('fi').value.trim();
-  const szr=document.getElementById('fsz').value;
-  const isnew=document.getElementById('fnw').checked;
-  if(!name||!cat||!price||!img){toast('Fill in all required fields.','err');return;}
-  const sizes=JSON.stringify(szr?szr.split(',').map(s=>s.trim()).filter(Boolean):['S','M','L','XL','XXL']);
-  const btn=document.getElementById('addBtn');
-  btn.innerHTML='<span class="spin"></span> Saving...';btn.disabled=true;
-  const ok=await createProduct({name,cat,img,price,desc,isnew,sizes});
-  btn.innerHTML='✓ Save Product';btn.disabled=false;
-  if(ok){clearAdd();toast('✓ Product added to database!','ok');nav('prods');}
-  else toast('Failed to save. Check Supabase connection.','err');
+// ── ADD ──
+function prev(inId, prevId) {
+  const u = document.getElementById(inId).value.trim();
+  const el = document.getElementById(prevId);
+  el.src = u; el.classList.toggle('on', !!u);
 }
-
-function clearAdd(){
+async function addProd() {
+  const name = document.getElementById('fn').value.trim();
+  const cat  = document.getElementById('fc').value;
+  const price = parseInt(document.getElementById('fpr').value);
+  const desc = document.getElementById('fd').value.trim();
+  const img  = document.getElementById('fi').value.trim();
+  const szr  = document.getElementById('fsz').value;
+  const isNew = document.getElementById('fnew').checked;
+  if (!name||!cat||!price||!img) { toast('Fill in all required fields.','err'); return; }
+  const sizes = szr ? szr.split(',').map(s=>s.trim()).filter(Boolean) : ['S','M','L','XL','XXL'];
+  const newId = PRODS.length ? Math.max(...PRODS.map(p=>p.id))+1 : 1;
+  PRODS.push({id:newId,name,cat,img,price,desc,isNew,sizes});
+  const ok = await cloudSave(PRODS);
+  clearAdd();
+  toast(ok ? '✓ Product saved & synced to cloud!' : 'Saved — but cloud sync failed.', ok?'ok':'err');
+  if (ok) nav('prods');
+}
+function clearAdd() {
   ['fn','fpr','fd','fi','fsz'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fc').value='';
-  document.getElementById('fnw').checked=false;
+  document.getElementById('fnew').checked=false;
   document.getElementById('fip').classList.remove('on');
 }
 
-// ════════════════════════════════════════
-//  EDIT PRODUCT
-// ════════════════════════════════════════
-let eid=null;
-
-async function openEdit(id){
-  if(!SB_URL||!SB_KEY){toast('Connect Supabase first.','err');return;}
-  const res=await sbFetch(`products?id=eq.${id}&select=*`);
-  const data=await res.json();
-  const p=data[0];if(!p)return;
-  eid=id;
-  document.getElementById('en').value=p.name;
-  document.getElementById('ec').value=p.cat;
-  document.getElementById('epr').value=p.price;
-  document.getElementById('ed').value=p.desc||'';
-  document.getElementById('ei').value=p.img;
-  const sz=typeof p.sizes==='string'?JSON.parse(p.sizes):(p.sizes||[]);
-  document.getElementById('esz').value=sz.join(', ');
-  document.getElementById('enw').checked=!!p.isnew;
-  const ep=document.getElementById('eip');ep.src=p.img;ep.classList.add('on');
-  on('eOv');on('eMod');
+// ── EDIT ──
+let eid = null;
+function openEdit(id) {
+  const p = PRODS.find(x=>x.id===id); if(!p) return;
+  eid = id;
+  document.getElementById('en').value  = p.name;
+  document.getElementById('ec').value  = p.cat;
+  document.getElementById('epr').value = p.price;
+  document.getElementById('ed').value  = p.desc||'';
+  document.getElementById('ei').value  = p.img;
+  document.getElementById('esz').value = (p.sizes||[]).join(', ');
+  document.getElementById('enew').checked = !!p.isNew;
+  const ep = document.getElementById('eip'); ep.src=p.img; ep.classList.add('on');
+  on('eOv'); on('eMod');
 }
-function closeEdit(){off('eOv');off('eMod');eid=null;}
-
-async function saveEdit(){
-  if(!eid)return;
-  const name=document.getElementById('en').value.trim();
-  const cat=document.getElementById('ec').value;
-  const price=parseInt(document.getElementById('epr').value);
-  const desc=document.getElementById('ed').value.trim();
-  const img=document.getElementById('ei').value.trim();
-  const szr=document.getElementById('esz').value;
-  const isnew=document.getElementById('enw').checked;
-  if(!name||!cat||!price||!img){toast('Fill in all required fields.','err');return;}
-  const sizes=JSON.stringify(szr?szr.split(',').map(s=>s.trim()).filter(Boolean):['S','M','L','XL','XXL']);
-  const btn=document.getElementById('saveEditBtn');
-  btn.innerHTML='<span class="spin"></span> Saving...';btn.disabled=true;
-  const ok=await updateProduct(eid,{name,cat,img,price,desc,isnew,sizes});
-  btn.innerHTML='✓ Save Changes';btn.disabled=false;
-  if(ok){closeEdit();refreshAll();toast('✓ Product updated!','ok');}
-  else toast('Update failed.','err');
+function closeEdit() { off('eOv'); off('eMod'); eid=null; }
+async function saveEdit() {
+  if (!eid) return;
+  const name  = document.getElementById('en').value.trim();
+  const cat   = document.getElementById('ec').value;
+  const price = parseInt(document.getElementById('epr').value);
+  const desc  = document.getElementById('ed').value.trim();
+  const img   = document.getElementById('ei').value.trim();
+  const szr   = document.getElementById('esz').value;
+  const isNew = document.getElementById('enew').checked;
+  if (!name||!cat||!price||!img) { toast('Fill in all required fields.','err'); return; }
+  const sizes = szr ? szr.split(',').map(s=>s.trim()).filter(Boolean) : ['S','M','L','XL','XXL'];
+  const idx = PRODS.findIndex(x=>x.id===eid);
+  if (idx>-1) PRODS[idx] = {...PRODS[idx],name,cat,img,price,desc,isNew,sizes};
+  closeEdit();
+  const ok = await cloudSave(PRODS);
+  renderProds(curCat); renderDash();
+  toast(ok?'✓ Updated & synced!':'Updated locally — cloud sync failed.',ok?'ok':'err');
 }
 
-// ════════════════════════════════════════
-//  DELETE
-// ════════════════════════════════════════
-async function delProd(id){
-  if(!confirm('Delete this product? Cannot be undone.'))return;
-  const ok=await deleteProduct(id);
-  if(ok){refreshAll();toast('Product deleted.');}
-  else toast('Delete failed.','err');
+// ── DELETE ──
+async function delProd(id) {
+  if (!confirm('Delete this product? Cannot be undone.')) return;
+  PRODS = PRODS.filter(p=>p.id!==id);
+  const ok = await cloudSave(PRODS);
+  renderProds(curCat); renderDash();
+  toast(ok?'✓ Deleted & synced.':'Deleted locally — cloud sync failed.',ok?'ok':'err');
 }
 
-// ════════════════════════════════════════
-//  SETTINGS — Change password
-// ════════════════════════════════════════
-function changePwd(){
-  const c=document.getElementById('cp').value;
-  const n=document.getElementById('np').value;
-  const cn=document.getElementById('cnp').value;
+// ── SETTINGS ──
+function changePwd() {
+  const c=document.getElementById('cp').value, n=document.getElementById('np').value, cn=document.getElementById('cnp').value;
   const cr=getCreds();
-  if(c!==cr.pass){toast('Current password incorrect.','err');return;}
-  if(n.length<6){toast('New password must be 6+ characters.','err');return;}
-  if(n!==cn){toast('Passwords do not match.','err');return;}
-  localStorage.setItem(CK,JSON.stringify({user:cr.user,pass:n}));
+  if (c!==cr.pass) { toast('Current password incorrect.','err'); return; }
+  if (n.length<6)  { toast('Password must be 6+ characters.','err'); return; }
+  if (n!==cn)      { toast('Passwords do not match.','err'); return; }
+  localStorage.setItem(CKEY,JSON.stringify({user:cr.user,pass:n}));
   ['cp','np','cnp'].forEach(id=>document.getElementById(id).value='');
-  toast('✓ Password updated!','ok');
+  toast('✓ Password updated!');
+}
+async function resetAll() {
+  if (!confirm('Reset ALL products to defaults? This overwrites the cloud too.')) return;
+  PRODS = [...DEF];
+  const ok = await cloudSave(PRODS);
+  renderProds('all'); renderDash();
+  toast(ok?'✓ Reset & synced.':'Reset locally — cloud sync failed.',ok?'ok':'err');
 }
 
-// ════════════════════════════════════════
-//  NAV
-// ════════════════════════════════════════
-document.addEventListener('DOMContentLoaded',()=>{
-  document.querySelectorAll('.si').forEach(s=>s.addEventListener('click',()=>nav(s.dataset.pg)));
-  document.getElementById('catChips').addEventListener('click',e=>{
-    const c=e.target.closest('.ch');if(c)renderProds(c.dataset.c);
-  });
-});
-function nav(pg){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.si').forEach(s=>s.classList.remove('on'));
-  document.getElementById('pg-'+pg).classList.add('on');
-  document.querySelectorAll('.si').forEach(s=>{if(s.dataset.pg===pg)s.classList.add('on');});
-  if(pg==='dash')renderDash();
-  if(pg==='prods')renderProds(curCat);
-  if(pg==='add'){document.getElementById('noSetupWarn').style.display=(!SB_URL||!SB_KEY)?'block':'none';}
-}
-
-// ════════════════════════════════════════
-//  TOAST
-// ════════════════════════════════════════
+// ── TOAST ──
 let tt;
-function toast(msg,t=''){
+function toast(msg, t='ok') {
   const el=document.getElementById('toast');
-  el.textContent=msg;el.className='show'+(t?' '+t:'');
-  clearTimeout(tt);tt=setTimeout(()=>el.className='',3600);
+  el.textContent=msg; el.className=t==='err'?'on err':'on';
+  clearTimeout(tt); tt=setTimeout(()=>el.className='',3500);
 }
 
-// ════════════════════════════════════════
-//  UTIL
-// ════════════════════════════════════════
-function on(id){const el=document.getElementById(id);if(el)el.classList.add('on');}
-function off(id){const el=document.getElementById(id);if(el)el.classList.remove('on');}
+// ── UTIL ──
+function show(id) { document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
+function on(id)  { const e=document.getElementById(id); if(e) e.classList.add('on'); }
+function off(id) { const e=document.getElementById(id); if(e) e.classList.remove('on'); }
 </script>
 </body>
 </html>
