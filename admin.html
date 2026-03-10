@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Upscale Drip — Admin</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#1e0f06;--bg2:#2a1509;--bg3:#361b0c;--bg4:#180a03;--ac:#c07830;--ac2:#e09048;--cr:#f0e0c8;--cr2:#faf4ec;--mu:rgba(240,224,200,.45);--r:6px}
+body{background:var(--bg);color:var(--cr);font-family:'Segoe UI',sans-serif;font-size:.88rem}
+.scr{display:none;min-height:100vh}
+.scr.on{display:flex}
+/* LOGIN */
+#scrLogin{align-items:center;justify-content:center;background:var(--bg4)}
+.login-box{background:var(--bg2);border:1px solid rgba(192,120,48,.2);border-radius:12px;padding:44px 36px;width:100%;max-width:360px;text-align:center}
+.login-box img{width:60px;height:60px;border-radius:10px;margin:0 auto 16px;display:block;object-fit:cover}
+.login-box h2{font-size:1rem;letter-spacing:3px;text-transform:uppercase;color:var(--cr2);margin-bottom:4px}
+.login-box p{font-size:.72rem;color:var(--mu);margin-bottom:24px}
+.login-box input{width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(192,120,48,.2);color:var(--cr);font-size:.88rem;border-radius:6px;outline:none;margin-bottom:12px;font-family:inherit}
+.login-box input:focus{border-color:var(--ac)}
+#lerr{color:#e07070;font-size:.75rem;min-height:18px;margin-bottom:8px}
+/* ADMIN SHELL */
+#scrAdmin{background:var(--bg);flex-direction:column}
+.topbar{background:var(--bg2);border-bottom:1px solid rgba(192,120,48,.12);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar__brand{display:flex;align-items:center;gap:10px}
+.topbar__brand img{width:32px;height:32px;border-radius:6px;object-fit:cover}
+.topbar__brand span{font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--ac)}
+.topbar__right{display:flex;align-items:center;gap:12px}
+.cb{display:flex;align-items:center;gap:6px;font-size:.65rem;padding:4px 10px;border-radius:20px;border:1px solid rgba(192,120,48,.2)}
+.cb .dot{width:7px;height:7px;border-radius:50%}
+.cb-ok .dot{background:#4caf50}
+.cb-err .dot{background:#e74c3c}
+.tabs{display:flex;border-bottom:1px solid rgba(192,120,48,.12);background:var(--bg2);padding:0 24px}
+.tab{padding:14px 20px;font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.content{padding:24px;max-width:1100px;margin:0 auto;width:100%}
+/* DASH */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.sc{background:var(--bg2);border:1px solid rgba(192,120,48,.1);border-radius:10px;padding:20px;text-align:center}
+.sc-num{font-size:2rem;font-weight:700;color:var(--ac)}
+.sc-lbl{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-top:4px}
+/* TABLE */
+.tbl-wrap{background:var(--bg2);border-radius:10px;border:1px solid rgba(192,120,48,.1);overflow:hidden}
+.tbl-head{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(192,120,48,.1)}
+.tbl-head h3{font-size:.82rem;color:var(--cr2)}
+.cat-chips{display:flex;gap:6px;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid rgba(192,120,48,.08)}
+.chip{padding:4px 12px;border-radius:20px;font-size:.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(192,120,48,.2);color:var(--mu);cursor:pointer;transition:all .2s}
+.chip.active{background:var(--ac);border-color:var(--ac);color:var(--bg)}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 16px;text-align:left;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);border-bottom:1px solid rgba(192,120,48,.1);font-weight:500}
+td{padding:11px 16px;font-size:.78rem;border-bottom:1px solid rgba(192,120,48,.06);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(192,120,48,.03)}
+.prod-thumb{width:40px;height:48px;object-fit:cover;object-position:top;border-radius:4px}
+.badge-new{background:var(--ac);color:var(--bg);font-size:.5rem;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:1px}
+.act-btns{display:flex;gap:6px}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:var(--ac);color:var(--bg);font-family:inherit;font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:var(--r);border:none;cursor:pointer;transition:all .2s}
+.btn:hover{background:var(--ac2)}
+.btn-sm{padding:5px 12px;font-size:.58rem}
+.btn-r{background:#c0392b}.btn-r:hover{background:#e74c3c}
+.btn-grn{background:#27ae60}.btn-grn:hover{background:#2ecc71}
+.btn-ghost{background:transparent;border:1px solid rgba(192,120,48,.3);color:var(--mu)}
+.btn-ghost:hover{border-color:var(--ac);color:var(--cr)}
+/* FORM */
+.pbox{background:var(--bg2);border-radius:10px;padding:24px;border:1px solid rgba(192,120,48,.1);margin-bottom:20px}
+.pbox h3{font-size:.9rem;color:var(--cr2);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid rgba(192,120,48,.1)}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:6px}
+.f{width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(192,120,48,.18);color:var(--cr);font-family:inherit;font-size:.82rem;border-radius:var(--r);outline:none}
+.f:focus{border-color:var(--ac)}
+.f::placeholder{color:var(--mu)}
+textarea.f{resize:vertical;min-height:70px}
+select.f option{background:var(--bg2)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border-radius:12px;padding:28px;width:92%;max-width:600px;max-height:90vh;overflow-y:auto;border:1px solid rgba(192,120,48,.15)}
+.modal h3{font-size:1rem;color:var(--cr2);margin-bottom:20px}
+.modal-close{float:right;color:var(--mu);font-size:1.1rem;cursor:pointer;background:none;border:none;font-family:inherit}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid rgba(192,120,48,.25);color:var(--cr);padding:12px 20px;border-radius:8px;font-size:.78rem;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:320px}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.err{border-color:#e07070;color:#e07070}
+/* HERO EDITOR */
+.slide-box{background:var(--bg3);border-radius:8px;padding:16px;margin-bottom:14px;border:1px solid rgba(192,120,48,.1)}
+.slide-box h4{font-size:.72rem;color:var(--ac);margin-bottom:12px;letter-spacing:2px;text-transform:uppercase}
+/* COLOR PICKER */
+.color-row{display:flex;gap:8px;align-items:center}
+.color-row input[type=color]{width:40px;height:34px;border:none;border-radius:6px;cursor:pointer;padding:2px;background:none}
+/* CAT STYLE */
+.fbtn{padding:6px 14px;border-radius:20px;font-size:.62rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(192,120,48,.25);color:var(--mu);cursor:pointer;background:none;transition:all .2s}
+.fbtn.active{background:var(--ac);border-color:var(--ac);color:var(--bg)}
+/* SAVING OVERLAY */
+.saving-bar{display:none;position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--ac),var(--ac2),var(--ac));z-index:999;animation:savingAnim 1.2s linear infinite}
+.saving-bar.on{display:block}
+@keyframes savingAnim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="scr on" id="scrLogin">
+  <div class="login-box">
+    <img src="logo.jpg" alt="Upscale Drip"/>
+    <h2>Upscale Drip</h2>
+    <p>Admin Panel</p>
+    <input id="lu" type="text" placeholder="Username" autocomplete="off" spellcheck="false"/>
+    <input id="lp" type="password" placeholder="Password"/>
+    <div id="lerr"></div>
+    <button class="btn" style="width:100%;justify-content:center;padding:13px" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="scr" id="scrAdmin">
+  <div style="width:100%">
+    <div class="topbar">
+      <div class="topbar__brand">
+        <img src="logo.jpg" alt=""/>
+        <span>Upscale Drip Admin</span>
+      </div>
+      <div class="topbar__right">
+        <div id="cloudBadge"><div class="cb"><span class="dot" style="background:var(--mu)"></span>Connecting...</div></div>
+        <button class="btn btn-ghost btn-sm" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('dash',this)">Dashboard</div>
+      <div class="tab" onclick="switchTab('prods',this)">Products</div>
+      <div class="tab" onclick="switchTab('add',this)">Add Product</div>
+      <div class="tab" onclick="switchTab('settings',this)">Settings</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="content" id="tabDash">
+      <div class="stats-grid">
+        <div class="sc"><div class="sc-num" id="dTotal">—</div><div class="sc-lbl">Total Products</div></div>
+        <div class="sc"><div class="sc-num" id="dNew">—</div><div class="sc-lbl">New Arrivals</div></div>
+        <div class="sc"><div class="sc-num" id="dCats">—</div><div class="sc-lbl">Categories</div></div>
+        <div class="sc"><div class="sc-num" id="dAvg">—</div><div class="sc-lbl">Avg Price ৳</div></div>
+      </div>
+      <div class="pbox">
+        <h3>Quick Actions</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" onclick="switchTab('add',document.querySelectorAll('.tab')[2])">+ Add Product</button>
+          <a href="index.html" target="_blank" class="btn btn-ghost">View Site</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="content" id="tabProds" style="display:none">
+      <div class="tbl-wrap">
+        <div class="tbl-head">
+          <h3>All Products</h3>
+          <button class="btn btn-sm" onclick="switchTab('add',document.querySelectorAll('.tab')[2])">+ Add</button>
+        </div>
+        <div class="cat-chips" id="filterChips"></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="prodTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div class="content" id="tabAdd" style="display:none">
+      <div class="pbox" style="max-width:700px">
+        <h3>Add New Product</h3>
+        <div class="fr2">
+          <div class="fg"><label>Product Name *</label><input class="f" id="fn" placeholder="e.g. Short Panjabi - Sand White"/></div>
+          <div class="fg"><label>Category *</label><select class="f" id="fc"></select></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>Price (৳) *</label><input class="f" id="fp" type="number" placeholder="3200"/></div>
+          <div class="fg"><label>Status</label><select class="f" id="fNew"><option value="false">Regular</option><option value="true">New Arrival</option></select></div>
+        </div>
+        <div class="fg"><label>Main Image URL *</label><input class="f" id="fImg" placeholder="https://..."/></div>
+        <div class="fg"><label>Extra Images (one URL per line)</label><textarea class="f" id="fImgs" rows="3" placeholder="https://...\nhttps://..."></textarea></div>
+        <div class="fg"><label>Description</label><textarea class="f" id="fDesc" rows="3" placeholder="Product description..."></textarea></div>
+        <div class="fg"><label>Sizes (comma separated)</label><input class="f" id="fSizes" placeholder="S, M, L, XL, XXL"/></div>
+        <div class="fg"><label>Colors (name:hexcode, e.g. Navy:#003153, Sand:#c2b280)</label><input class="f" id="fColors" placeholder="Navy:#003153, Sand White:#c2b280"/></div>
+        <div class="fg"><label>Size Chart (image URL or text table)</label><input class="f" id="fChart" placeholder="https://... or leave blank"/></div>
+        <button class="btn" onclick="addProduct()">&#10003; Add Product</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="content" id="tabSettings" style="display:none">
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Hero Slides</h3>
+        <div id="heroEditor"></div>
+        <button class="btn btn-grn" onclick="saveHero()">&#10003; Save Hero Slides</button>
+      </div>
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Ticker Bar</h3>
+        <p style="font-size:.72rem;color:var(--mu);margin-bottom:10px">One item per line</p>
+        <textarea class="f" id="tickerEditor" rows="6"></textarea>
+        <button class="btn btn-grn" style="margin-top:10px" onclick="saveTicker()">&#10003; Save Ticker</button>
+      </div>
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Hamburger Menu</h3>
+
+        <p style="font-size:.72rem;color:var(--mu);margin-bottom:16px">Manage menu links. For category filter links use format: <code style="color:var(--ac)">#collection|shirt</code></p>
+
+        <div id="menuList" style="margin-bottom:14px"></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:16px">
+          <div class="fg" style="margin:0"><label>Label</label><input class="f" id="newMenuLabel" placeholder="e.g. Shirts"/></div>
+          <div class="fg" style="margin:0"><label>Link</label><input class="f" id="newMenuHref" placeholder="#collection|shirt"/></div>
+          <button class="btn" style="height:38px;padding:0 16px" onclick="addMenuItem()">+ Add</button>
+        </div>
+
+        <p style="font-size:.65rem;color:var(--mu);margin-bottom:6px">Common links: <code style="color:var(--ac)">#home &nbsp; #new &nbsp; #collection &nbsp; #panjabi &nbsp; #about &nbsp; #contact</code></p>
+        <p style="font-size:.65rem;color:var(--mu);margin-bottom:16px">Filter links: <code style="color:var(--ac)">#collection|shirt &nbsp; #collection|polo &nbsp; #collection|jacket &nbsp; #collection|trouser</code></p>
+
+        <div style="border-top:1px solid rgba(192,120,48,.1);padding-top:16px;margin-top:4px">
+          <p style="font-size:.72rem;color:var(--cr2);margin-bottom:14px;font-weight:600">Menu Text Style</p>
+          <div class="fr2" style="margin-bottom:14px">
+            <div class="fg">
+              <label>Text Color</label>
+              <div class="color-row">
+                <input type="color" id="mTC" value="#f0e0c8" oninput="syncHex('mTC','mTCH');updateMenuPreview()"/>
+                <input class="f" id="mTCH" placeholder="#f0e0c8" oninput="syncPicker('mTCH','mTC');updateMenuPreview()"/>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Hover Color</label>
+              <div class="color-row">
+                <input type="color" id="mHC" value="#c07830" oninput="syncHex('mHC','mHCH');updateMenuPreview()"/>
+                <input class="f" id="mHCH" placeholder="#c07830" oninput="syncPicker('mHCH','mHC');updateMenuPreview()"/>
+              </div>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Font Size</label>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <button class="fbtn" id="mfSmall" onclick="setMenuFontSize('small')">Small</button>
+              <button class="fbtn active" id="mfMedium" onclick="setMenuFontSize('medium')">Medium</button>
+              <button class="fbtn" id="mfLarge" onclick="setMenuFontSize('large')">Large</button>
+            </div>
+          </div>
+          <div style="margin:14px 0 10px">
+            <p style="font-size:.65rem;color:var(--mu);margin-bottom:8px">Preview:</p>
+            <div id="menuPreview" style="background:var(--bg3);border-radius:8px;padding:10px 16px">
+              <div id="mpItem1" style="padding:10px 0;border-bottom:1px solid rgba(192,120,48,.1);font-size:.82rem;cursor:pointer">Home</div>
+              <div id="mpItem2" style="padding:10px 0;border-bottom:1px solid rgba(192,120,48,.1);font-size:.82rem;cursor:pointer">New Arrivals</div>
+              <div id="mpItem3" style="padding:10px 0;font-size:.82rem;cursor:pointer;color:#c07830">Shirts ← hover</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-grn" onclick="saveMenu()">&#10003; Save Menu</button>
+      </div>
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Category Filter Style</h3>
+        <div class="fr2" style="margin-bottom:14px">
+          <div class="fg">
+            <label>Active Color</label>
+            <div class="color-row">
+              <input type="color" id="cAC" value="#c07830" oninput="syncHex('cAC','cACH');updateCatPreview()"/>
+              <input class="f" id="cACH" placeholder="#c07830" oninput="syncPicker('cACH','cAC');updateCatPreview()"/>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Active Text</label>
+            <div class="color-row">
+              <input type="color" id="cAT" value="#1e0f06" oninput="syncHex('cAT','cATH');updateCatPreview()"/>
+              <input class="f" id="cATH" placeholder="#1e0f06" oninput="syncPicker('cATH','cAT');updateCatPreview()"/>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Border Color</label>
+            <div class="color-row">
+              <input type="color" id="cBC" value="#c07830" oninput="syncHex('cBC','cBCH');updateCatPreview()"/>
+              <input class="f" id="cBCH" placeholder="#c07830" oninput="syncPicker('cBCH','cBC');updateCatPreview()"/>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Inactive Text</label>
+            <div class="color-row">
+              <input type="color" id="cIT" value="#f0e0c8" oninput="syncHex('cIT','cITH');updateCatPreview()"/>
+              <input class="f" id="cITH" placeholder="#f0e0c8" oninput="syncPicker('cITH','cIT');updateCatPreview()"/>
+            </div>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Font Size</label>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="fbtn" id="fsSmall" onclick="setFontSize('small')">Small</button>
+            <button class="fbtn active" id="fsMedium" onclick="setFontSize('medium')">Medium</button>
+            <button class="fbtn" id="fsLarge" onclick="setFontSize('large')">Large</button>
+          </div>
+        </div>
+        <div style="margin:16px 0 6px">
+          <p style="font-size:.65rem;color:var(--mu);margin-bottom:8px">Preview:</p>
+          <div style="display:flex;gap:8px">
+            <span id="pvActive" style="padding:7px 18px;border-radius:20px;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:inline-block">All</span>
+            <span id="pvInactive" style="padding:7px 18px;border-radius:20px;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:inline-block">Shirts</span>
+            <span id="pvInactive2" style="padding:7px 18px;border-radius:20px;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:inline-block">Polo</span>
+          </div>
+        </div>
+        <button class="btn btn-grn" onclick="saveCatStyle()">&#10003; Save Style</button>
+      </div>
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Custom Categories</h3>
+        <p style="font-size:.72rem;color:var(--mu);margin-bottom:12px">Add categories beyond the defaults.</p>
+        <div id="catList" style="margin-bottom:12px"></div>
+        <div style="display:flex;gap:8px">
+          <input class="f" id="newCatInput" placeholder="e.g. accessories" style="flex:1"/>
+          <button class="btn" onclick="addCat()">+ Add</button>
+        </div>
+      </div>
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Order Email (EmailJS)</h3>
+        <p style="font-size:.72rem;color:var(--mu);margin-bottom:12px">Sign up free at <a href="https://www.emailjs.com" target="_blank" style="color:var(--ac)">emailjs.com</a> — 200 emails/month free.</p>
+        <div class="fg"><label>Public Key</label><input class="f" id="ejPub" placeholder="your_public_key"/></div>
+        <div class="fg"><label>Service ID</label><input class="f" id="ejSvc" placeholder="service_xxxxxx"/></div>
+        <div class="fg"><label>Template ID</label><input class="f" id="ejTpl" placeholder="template_xxxxxx"/></div>
+        <p style="font-size:.65rem;color:var(--mu);margin-bottom:10px">Template variables: <code style="color:var(--ac)">customer_name, phone, address, location, items, subtotal, delivery, total</code></p>
+        <button class="btn btn-grn" onclick="saveEmailJS()">&#10003; Save Email Settings</button>
+      </div>
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Change Password</h3>
+        <div class="fg"><label>Current Password</label><input class="f" type="password" id="cp"/></div>
+        <div class="fr2">
+          <div class="fg"><label>New Password</label><input class="f" type="password" id="np"/></div>
+          <div class="fg"><label>Confirm New Password</label><input class="f" type="password" id="cnp"/></div>
+        </div>
+        <button class="btn" onclick="changePass()">Change Password</button>
+      </div>
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Danger Zone</h3>
+        <p style="font-size:.72rem;color:var(--mu);margin-bottom:12px">Reset all products to the 16 defaults.</p>
+        <button class="btn btn-r" onclick="resetAll()">&#9888; Reset All Products</button>
+      </div>
+
+    </div><!-- /settings -->
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeEdit()">&#10005;</button>
+    <h3>Edit Product</h3>
+    <input type="hidden" id="eid"/>
+    <div class="fr2">
+      <div class="fg"><label>Name *</label><input class="f" id="en"/></div>
+      <div class="fg"><label>Category *</label><select class="f" id="ec"></select></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label>Price (৳) *</label><input class="f" id="ep" type="number"/></div>
+      <div class="fg"><label>Status</label><select class="f" id="eNew"><option value="false">Regular</option><option value="true">New Arrival</option></select></div>
+    </div>
+    <div class="fg"><label>Main Image URL</label><input class="f" id="eImg"/></div>
+    <div class="fg"><label>Extra Images (one per line)</label><textarea class="f" id="eImgs" rows="3"></textarea></div>
+    <div class="fg"><label>Description</label><textarea class="f" id="eDesc" rows="3"></textarea></div>
+    <div class="fg"><label>Sizes (comma separated)</label><input class="f" id="eSizes"/></div>
+    <div class="fg"><label>Colors (name:hexcode)</label><input class="f" id="eColors"/></div>
+    <div class="fg"><label>Size Chart URL or text</label><input class="f" id="eChart"/></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn" onclick="saveEdit()">&#10003; Save Changes</button>
+      <button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="saving-bar" id="savingBar"></div>
+
+<script>
+var SB_URL = 'https://pwbvhiczbljxotyiqwin.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3YnZoaWN6YmxqeG90eWlxd2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzA0NjQsImV4cCI6MjA4ODY0NjQ2NH0.D5AfG-0RzwMVuLhfY_UIaBmjnXt2v2VZ6OrHuLbLZ10';
+var SB_H = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+var SB_HR = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+var CKEY = 'ud_creds';
+
+// ── AUTH ──
+function getCreds() {
+  try {
+    var r = localStorage.getItem(CKEY);
+    if (r) { var p = JSON.parse(r); if (p && p.user && p.pass) return p; }
+  } catch(e) {}
+  return {user:'upscaledrip', pass:'UD@Admin2026'};
+}
+
+function doLogin() {
+  var u = document.getElementById('lu').value.trim();
+  var p = document.getElementById('lp').value;
+  var err = document.getElementById('lerr');
+  if (!u) { err.textContent = 'Enter username.'; return; }
+  if (!p) { err.textContent = 'Enter password.'; return; }
+  var cr = getCreds();
+  if (u === cr.user && p === cr.pass) {
+    try { sessionStorage.setItem('ud_ok','1'); } catch(e) {}
+    hide('scrLogin'); bootAdmin();
+  } else {
+    err.textContent = 'Incorrect username or password.';
+    setTimeout(function(){ err.textContent = ''; }, 3000);
+  }
+}
+function doLogout() { try{sessionStorage.removeItem('ud_ok');}catch(e){} hide('scrAdmin'); show('scrLogin'); }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('scrLogin').classList.contains('on')) doLogin();
+});
+
+// ── UI HELPERS ──
+function show(id){ document.getElementById(id).classList.add('on'); }
+function hide(id){ document.getElementById(id).classList.remove('on'); }
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.innerHTML = msg; t.className = 'toast' + (type==='err'?' err':'');
+  setTimeout(function(){ t.classList.add('on'); }, 10);
+  setTimeout(function(){ t.classList.remove('on'); }, 3200);
+}
+function saving(on) { document.getElementById('savingBar').classList[on?'add':'remove']('on'); }
+function switchTab(name, el) {
+  ['tabDash','tabProds','tabAdd','tabSettings'].forEach(function(t){ document.getElementById(t).style.display='none'; });
+  document.getElementById('tab'+name.charAt(0).toUpperCase()+name.slice(1)).style.display='block';
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  if(el) el.classList.add('active');
+}
+
+// ── SUPABASE ──
+async function sbFetch(path, opts) {
+  var r = await fetch(SB_URL + path, opts);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function sbGetSettings() {
+  var d = await sbFetch('/rest/v1/site_settings?select=*&limit=1', {headers: SB_HR});
+  return d && d[0] ? d[0] : null;
+}
+async function sbSaveSettings(fields) {
+  var s = await sbGetSettings();
+  var method = s ? 'PATCH' : 'POST';
+  var url = s ? '/rest/v1/site_settings?id=eq.'+s.id : '/rest/v1/site_settings';
+  await fetch(SB_URL + url, {
+    method: method, headers: SB_H,
+    body: JSON.stringify(fields)
+  });
+}
+
+// ── DEFAULTS ──
+var DEFAULT_MENU = [
+  {label:'Home', href:'#home'},
+  {label:'New Arrivals', href:'#new'},
+  {label:'All Products', href:'#collection|all'},
+  {label:'Shirts', href:'#collection|shirt'},
+  {label:'Polo', href:'#collection|polo'},
+  {label:'Panjabi', href:'#panjabi'},
+  {label:'About Us', href:'#about'},
+  {label:'Contact', href:'#contact'}
+];
+var DEFAULT_CATS = ['panjabi','shirt','polo','jacket','trouser'];
+var CUSTOM_CATS = [];
+var CAT_FONT_SIZE = 'medium';
+
+var DEF = [
+  {name:'Short Panjabi - Sand White',cat:'panjabi',img:'https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?w=700&q=85',price:3200,description:'Premium cotton short panjabi.',isnew:true,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Premium Linen Shirt - Natural Beige',cat:'shirt',img:'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=700&q=85',price:1800,description:'Pure linen blend.',isnew:true,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Premium Polo Shirt - Coffee Brown',cat:'polo',img:'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=700&q=85',price:2400,description:'Fine pique cotton polo.',isnew:true,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Oxford Button-Down Shirt - White',cat:'shirt',img:'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=700&q=85',price:1800,description:'Classic Oxford weave.',isnew:true,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Short Panjabi - Olive Green',cat:'panjabi',img:'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&q=85',price:3200,description:'Soft premium cotton.',isnew:false,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Short Panjabi - Charcoal Black',cat:'panjabi',img:'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=700&q=85',price:3200,description:'Elegant charcoal black.',isnew:false,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Linen Shirt - Slate Blue',cat:'shirt',img:'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=700&q=85',price:1800,description:'Relaxed slate blue.',isnew:false,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Cuban Collar Shirt - Brown',cat:'shirt',img:'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=700&q=85',price:1800,description:'Relaxed open collar.',isnew:false,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Classic Polo - Navy Blue',cat:'polo',img:'https://images.unsplash.com/photo-1571455786673-9d9d6c194f90?w=700&q=85',price:2400,description:'Premium pique cotton.',isnew:false,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Striped Polo - Cream and Brown',cat:'polo',img:'https://images.unsplash.com/photo-1622445275576-721325763afe?w=700&q=85',price:2400,description:'Subtle horizontal stripes.',isnew:false,sizes:['S','M','L','XL','XXL'],colors:[],images:[],sizechart:''},
+  {name:'Tailored Drip Trousers - Cream',cat:'trouser',img:'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=700&q=85',price:2200,description:'High-waist tapered cut.',isnew:false,sizes:['28','30','32','34','36'],colors:[],images:[],sizechart:''},
+  {name:'Slim Chino Trousers - Khaki',cat:'trouser',img:'https://images.unsplash.com/photo-1542272604-787c3835535d?w=700&q=85',price:2200,description:'Premium cotton twill.',isnew:false,sizes:['28','30','32','34','36'],colors:[],images:[],sizechart:''},
+  {name:'Cargo Utility Trousers - Black',cat:'trouser',img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=700&q=85',price:2500,description:'8-pocket utility.',isnew:false,sizes:['28','30','32','34','36'],colors:[],images:[],sizechart:''},
+  {name:'Varsity Bomber Jacket - Black',cat:'jacket',img:'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=700&q=85',price:4200,description:'Ribbed cuffs, satin lining.',isnew:false,sizes:['S','M','L','XL'],colors:[],images:[],sizechart:''},
+  {name:'Onyx Trench Coat',cat:'jacket',img:'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700&q=85',price:5200,description:'Double-breasted trench.',isnew:false,sizes:['S','M','L','XL'],colors:[],images:[],sizechart:''},
+  {name:'Structured Blazer - Camel',cat:'jacket',img:'https://images.unsplash.com/photo-1548778052-311f4bc2b502?w=700&q=85',price:3800,description:'Sharp camel blazer.',isnew:false,sizes:['S','M','L','XL'],colors:[],images:[],sizechart:''}
+];
+
+var DEFAULT_HERO = [
+  {img:'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=1600&q=80',tag:'SS 2026 New Collection',title:'PREMIUM',titleEm:'SHIRTS.',sub:'Crafted from the finest fabrics.',btn1:'Shop Now',btn1link:'#collection',btn2:'New Arrivals',btn2link:'#new'},
+  {img:'https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?w=1600&q=80',tag:'Traditional Modern',title:'SHORT',titleEm:'PANJABI.',sub:'Premium cotton. Traditional elegance.',btn1:'Shop Panjabi',btn1link:'#panjabi',btn2:'New Arrivals',btn2link:'#new'},
+  {img:'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=1600&q=80',tag:'Exclusive Limited',title:'PREMIUM',titleEm:'POLO.',sub:'Signature pique cotton.',btn1:'Shop Polo',btn1link:'#collection',btn2:'New Arrivals',btn2link:'#new'}
+];
+
+var PRODS = [], curCat = 'all', CURRENT_HERO = [];
+
+// ── BOOT ──
+async function bootAdmin() {
+  show('scrAdmin');
+  saving(true);
+  try {
+    var d = await sbFetch('/rest/v1/products?select=*&order=id.asc', {headers: SB_HR});
+    PRODS = Array.isArray(d) ? d : [];
+    document.getElementById('cloudBadge').innerHTML = '<div class="cb cb-ok"><span class="dot"></span>Supabase connected</div>';
+  } catch(e) {
+    document.getElementById('cloudBadge').innerHTML = '<div class="cb cb-err"><span class="dot"></span>Offline</div>';
+  }
+  populateCatSelects();
+  renderDash();
+  renderProds('all');
+  await loadSettings();
+  saving(false);
+}
+
+// ── DASHBOARD ──
+function renderDash() {
+  document.getElementById('dTotal').textContent = PRODS.length;
+  document.getElementById('dNew').textContent = PRODS.filter(function(p){ return p.isnew; }).length;
+  var cats = [...new Set(PRODS.map(function(p){ return p.cat; }))];
+  document.getElementById('dCats').textContent = cats.length;
+  var avg = PRODS.length ? Math.round(PRODS.reduce(function(s,p){ return s+Number(p.price); },0)/PRODS.length) : 0;
+  document.getElementById('dAvg').textContent = avg.toLocaleString();
+}
+
+// ── PRODUCTS TABLE ──
+function allCats() { return DEFAULT_CATS.concat(CUSTOM_CATS.filter(function(c){ return DEFAULT_CATS.indexOf(c)<0; })); }
+
+function renderFilterChips() {
+  var el = document.getElementById('filterChips');
+  var cats = ['all'].concat(allCats());
+  el.innerHTML = cats.map(function(c){
+    return '<span class="chip'+(c===curCat?' active':'')+'" onclick="renderProds(\''+c+'\')">'+
+      (c==='all'?'All':c.charAt(0).toUpperCase()+c.slice(1))+'</span>';
+  }).join('');
+}
+
+function normP(p) {
+  var s = p.sizes; if(!Array.isArray(s)){try{s=JSON.parse(s||'[]');}catch(e){s=['S','M','L','XL','XXL'];}}
+  var imgs = p.images; if(!Array.isArray(imgs)){try{imgs=imgs?JSON.parse(imgs):[];}catch(e){imgs=[];}}
+  var cols = p.colors; if(!Array.isArray(cols)){try{cols=cols?JSON.parse(cols):[];}catch(e){cols=[];}}
+  return Object.assign({},p,{sizes:s,images:imgs,colors:cols});
+}
+
+function parseCols(str) {
+  if(!str||!str.trim()) return [];
+  return str.split(',').map(function(s){
+    var parts = s.trim().split(':');
+    return {name:parts[0].trim(), hex:(parts[1]||'#888').trim()};
+  }).filter(function(c){ return c.name; });
+}
+
+function renderProds(cat) {
+  curCat = cat||'all';
+  renderFilterChips();
+  var list = curCat==='all' ? PRODS : PRODS.filter(function(p){ return p.cat===curCat; });
+  var tb = document.getElementById('prodTable');
+  if(!list.length){ tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--mu);padding:30px">No products</td></tr>'; return; }
+  tb.innerHTML = list.map(function(p){
+    return '<tr>'+
+      '<td><img class="prod-thumb" src="'+p.img+'" alt=""/></td>'+
+      '<td style="max-width:200px"><div style="font-size:.8rem;color:var(--cr2)">'+p.name+'</div></td>'+
+      '<td><span style="font-size:.65rem;color:var(--mu)">'+p.cat+'</span></td>'+
+      '<td>৳'+Number(p.price).toLocaleString()+'</td>'+
+      '<td>'+(p.isnew?'<span class="badge-new">NEW</span>':'<span style="color:var(--mu);font-size:.7rem">Regular</span>')+'</td>'+
+      '<td><div class="act-btns">'+
+        '<button class="btn btn-sm btn-ghost" onclick="openEdit('+p.id+')">Edit</button>'+
+        '<button class="btn btn-sm btn-r" onclick="delProd('+p.id+')">Del</button>'+
+      '</div></td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ── ADD PRODUCT ──
+async function addProduct() {
+  var name = document.getElementById('fn').value.trim();
+  var cat = document.getElementById('fc').value;
+  var price = document.getElementById('fp').value;
+  var img = document.getElementById('fImg').value.trim();
+  if(!name||!cat||!price||!img){ toast('Fill in Name, Category, Price and Image.','err'); return; }
+  var imgs = document.getElementById('fImgs').value.trim().split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  var sizes = document.getElementById('fSizes').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  if(!sizes.length) sizes = ['S','M','L','XL','XXL'];
+  var colors = parseCols(document.getElementById('fColors').value);
+  saving(true);
+  try {
+    var d = await sbFetch('/rest/v1/products', {
+      method:'POST', headers:SB_H,
+      body: JSON.stringify({
+        name:name, cat:cat, price:Number(price), img:img,
+        description:document.getElementById('fDesc').value.trim(),
+        isnew:document.getElementById('fNew').value==='true',
+        sizes:sizes, colors:colors, images:imgs,
+        sizechart:document.getElementById('fChart').value.trim()
+      })
+    });
+    PRODS = PRODS.concat(Array.isArray(d)?d:[d]);
+    renderDash(); renderProds(curCat);
+    ['fn','fp','fImg','fImgs','fDesc','fSizes','fColors','fChart'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('fc').selectedIndex=0;
+    toast('&#10003; Product added!');
+    switchTab('prods', document.querySelectorAll('.tab')[1]);
+  } catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+// ── EDIT PRODUCT ──
+function openEdit(id) {
+  var p = normP(PRODS.find(function(x){ return x.id===id; }));
+  if(!p) return;
+  document.getElementById('eid').value = p.id;
+  document.getElementById('en').value = p.name||'';
+  document.getElementById('ep').value = p.price||'';
+  document.getElementById('eImg').value = p.img||'';
+  document.getElementById('eImgs').value = (p.images||[]).join('\n');
+  document.getElementById('eDesc').value = p.description||'';
+  document.getElementById('eSizes').value = (p.sizes||[]).join(', ');
+  document.getElementById('eColors').value = (p.colors||[]).map(function(c){ return (c.name||c)+':'+(c.hex||c); }).join(', ');
+  document.getElementById('eChart').value = p.sizechart||'';
+  document.getElementById('eNew').value = String(!!p.isnew);
+  var ec = document.getElementById('ec');
+  populateCatSelects();
+  ec.value = p.cat||'';
+  document.getElementById('editModal').classList.add('on');
+}
+function closeEdit(){ document.getElementById('editModal').classList.remove('on'); }
+
+async function saveEdit() {
+  var id = document.getElementById('eid').value;
+  var sizes = document.getElementById('eSizes').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  if(!sizes.length) sizes=['S','M','L','XL','XXL'];
+  var imgs = document.getElementById('eImgs').value.trim().split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  var colors = parseCols(document.getElementById('eColors').value);
+  saving(true);
+  try {
+    await sbFetch('/rest/v1/products?id=eq.'+id, {
+      method:'PATCH', headers:SB_H,
+      body: JSON.stringify({
+        name:document.getElementById('en').value.trim(),
+        cat:document.getElementById('ec').value,
+        price:Number(document.getElementById('ep').value),
+        img:document.getElementById('eImg').value.trim(),
+        images:imgs, description:document.getElementById('eDesc').value.trim(),
+        isnew:document.getElementById('eNew').value==='true',
+        sizes:sizes, colors:colors,
+        sizechart:document.getElementById('eChart').value.trim()
+      })
+    });
+    var fresh = await sbFetch('/rest/v1/products?select=*&order=id.asc',{headers:SB_HR});
+    PRODS = Array.isArray(fresh)?fresh:PRODS;
+    renderDash(); renderProds(curCat);
+    closeEdit(); toast('&#10003; Saved!');
+  } catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+async function delProd(id) {
+  if(!confirm('Delete this product?')) return;
+  saving(true);
+  try {
+    await fetch(SB_URL+'/rest/v1/products?id=eq.'+id, {method:'DELETE', headers:SB_H});
+    PRODS = PRODS.filter(function(p){ return p.id!==id; });
+    renderDash(); renderProds(curCat); toast('&#10003; Deleted.');
+  } catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+// ── SETTINGS ──
+async function loadSettings() {
+  try {
+    var s = await sbGetSettings();
+    // Hero
+    var hs = s && s.hero_slides;
+    CURRENT_HERO = hs ? (typeof hs==='string'?JSON.parse(hs):hs) : DEFAULT_HERO.map(function(x){return Object.assign({},x);});
+    renderHeroEditor(CURRENT_HERO);
+    // Ticker
+    var ti = s && s.ticker_items;
+    var items = ti ? (typeof ti==='string'?JSON.parse(ti):ti) : ['New Arrivals SS26','Cash on Delivery','Short Panjabi','Linen Shirts','Premium Polo'];
+    document.getElementById('tickerEditor').value = items.join('\n');
+    // Menu items
+    var mi = s && s.menu_items;
+    MENU_ITEMS = mi ? (typeof mi==='string'?JSON.parse(mi):mi) : DEFAULT_MENU.slice();
+    renderMenuList();
+    // Menu style
+    var ms = s && s.menu_style;
+    if(ms){ var mso=typeof ms==='string'?JSON.parse(ms):ms;
+      if(mso.textColor){document.getElementById('mTC').value=mso.textColor;document.getElementById('mTCH').value=mso.textColor;}
+      if(mso.hoverColor){document.getElementById('mHC').value=mso.hoverColor;document.getElementById('mHCH').value=mso.hoverColor;}
+      if(mso.fontSize) setMenuFontSize(mso.fontSize);
+    }
+    updateMenuPreview();
+    // Custom cats
+    var cc = s && s.custom_cats;
+    CUSTOM_CATS = cc ? (typeof cc==='string'?JSON.parse(cc):cc) : [];
+    renderCatList(); populateCatSelects();
+    // Cat style
+    var cs = s && s.cat_style;
+    if(cs) {
+      var cso = typeof cs==='string'?JSON.parse(cs):cs;
+      if(cso.activeColor){ document.getElementById('cAC').value=cso.activeColor; document.getElementById('cACH').value=cso.activeColor; }
+      if(cso.activeText){ document.getElementById('cAT').value=cso.activeText; document.getElementById('cATH').value=cso.activeText; }
+      if(cso.borderColor){ document.getElementById('cBC').value=cso.borderColor; document.getElementById('cBCH').value=cso.borderColor; }
+      if(cso.inactiveText){ document.getElementById('cIT').value=cso.inactiveText; document.getElementById('cITH').value=cso.inactiveText; }
+      if(cso.fontSize) setFontSize(cso.fontSize);
+    }
+    // EmailJS
+    if(s && s.emailjs_public) document.getElementById('ejPub').value = s.emailjs_public;
+    if(s && s.emailjs_service) document.getElementById('ejSvc').value = s.emailjs_service;
+    if(s && s.emailjs_template) document.getElementById('ejTpl').value = s.emailjs_template;
+    updateCatPreview();
+  } catch(e) {
+    CURRENT_HERO = DEFAULT_HERO.map(function(x){return Object.assign({},x);});
+    renderHeroEditor(CURRENT_HERO);
+    MENU_ITEMS = DEFAULT_MENU.slice(); renderMenuList(); updateMenuPreview();
+    renderCatList(); populateCatSelects(); updateCatPreview();
+  }
+}
+
+// ── HERO EDITOR ──
+function renderHeroEditor(slides) {
+  var el = document.getElementById('heroEditor');
+  el.innerHTML = slides.map(function(sl,i){
+    return '<div class="slide-box">'+
+      '<h4>Slide '+(i+1)+'</h4>'+
+      '<div class="fr2">'+
+        '<div class="fg"><label>Image URL</label><input class="f" id="hImg'+i+'" value="'+escH(sl.img||'')+'"/></div>'+
+        '<div class="fg"><label>Tag Line</label><input class="f" id="hTag'+i+'" value="'+escH(sl.tag||'')+'"/></div>'+
+      '</div>'+
+      '<div class="fr2">'+
+        '<div class="fg"><label>Title</label><input class="f" id="hTit'+i+'" value="'+escH(sl.title||'')+'"/></div>'+
+        '<div class="fg"><label>Title Italic Part</label><input class="f" id="hEm'+i+'" value="'+escH(sl.titleEm||'')+'"/></div>'+
+      '</div>'+
+      '<div class="fg"><label>Subtitle</label><input class="f" id="hSub'+i+'" value="'+escH(sl.sub||'')+'"/></div>'+
+      '<div class="fr2">'+
+        '<div class="fg"><label>Button 1 Text</label><input class="f" id="hB1'+i+'" value="'+escH(sl.btn1||'')+'"/></div>'+
+        '<div class="fg"><label>Button 1 Link</label><input class="f" id="hB1L'+i+'" value="'+escH(sl.btn1link||'')+'"/></div>'+
+      '</div>'+
+      '<div class="fr2">'+
+        '<div class="fg"><label>Button 2 Text</label><input class="f" id="hB2'+i+'" value="'+escH(sl.btn2||'')+'"/></div>'+
+        '<div class="fg"><label>Button 2 Link</label><input class="f" id="hB2L'+i+'" value="'+escH(sl.btn2link||'')+'"/></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function escH(s){ return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+async function saveHero() {
+  var slides = CURRENT_HERO.map(function(sl,i){
+    return {
+      img:document.getElementById('hImg'+i).value.trim(),
+      tag:document.getElementById('hTag'+i).value.trim(),
+      title:document.getElementById('hTit'+i).value.trim(),
+      titleEm:document.getElementById('hEm'+i).value.trim(),
+      sub:document.getElementById('hSub'+i).value.trim(),
+      btn1:document.getElementById('hB1'+i).value.trim(),
+      btn1link:document.getElementById('hB1L'+i).value.trim(),
+      btn2:document.getElementById('hB2'+i).value.trim(),
+      btn2link:document.getElementById('hB2L'+i).value.trim()
+    };
+  });
+  saving(true);
+  try { await sbSaveSettings({hero_slides:slides}); toast('&#10003; Hero saved!'); }
+  catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+async function saveTicker() {
+  var items = document.getElementById('tickerEditor').value.trim().split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  saving(true);
+  try { await sbSaveSettings({ticker_items:items}); toast('&#10003; Ticker saved!'); }
+  catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+// ── MENU ITEMS ──
+var MENU_ITEMS = [];
+var MENU_FONT_SIZE = 'medium';
+var MENU_FONT_MAP = {small:'.72rem', medium:'.82rem', large:'.95rem'};
+
+function renderMenuList(){
+  var el = document.getElementById('menuList'); if(!el) return;
+  if(!MENU_ITEMS.length){ el.innerHTML='<p style="font-size:.76rem;color:var(--mu)">No items yet.</p>'; return; }
+  el.innerHTML = MENU_ITEMS.map(function(m,i){
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border-radius:6px;margin-bottom:6px">'+
+      '<div>'+
+        '<div style="font-size:.8rem;color:var(--cr2)">'+escH(m.label)+'</div>'+
+        '<div style="font-size:.65rem;color:var(--mu);margin-top:2px">'+escH(m.href)+'</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:6px;align-items:center">'+
+        (i>0?'<button onclick="moveMenuItem('+i+',-1)" style="background:none;border:1px solid rgba(192,120,48,.2);color:var(--mu);border-radius:4px;padding:3px 8px;font-size:.7rem;cursor:pointer">&#8593;</button>':'')+
+        (i<MENU_ITEMS.length-1?'<button onclick="moveMenuItem('+i+',1)" style="background:none;border:1px solid rgba(192,120,48,.2);color:var(--mu);border-radius:4px;padding:3px 8px;font-size:.7rem;cursor:pointer">&#8595;</button>':'')+
+        '<button onclick="removeMenuItem('+i+')" style="background:none;border:none;color:#e07070;font-size:.65rem;cursor:pointer;padding:3px 8px">Remove</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function addMenuItem(){
+  var label = document.getElementById('newMenuLabel').value.trim();
+  var href = document.getElementById('newMenuHref').value.trim();
+  if(!label){ toast('Enter a label.','err'); return; }
+  if(!href){ toast('Enter a link.','err'); return; }
+  MENU_ITEMS.push({label:label, href:href});
+  document.getElementById('newMenuLabel').value='';
+  document.getElementById('newMenuHref').value='';
+  renderMenuList();
+}
+
+function removeMenuItem(i){
+  MENU_ITEMS.splice(i,1); renderMenuList();
+}
+
+function moveMenuItem(i,dir){
+  var j=i+dir;
+  if(j<0||j>=MENU_ITEMS.length) return;
+  var tmp=MENU_ITEMS[i]; MENU_ITEMS[i]=MENU_ITEMS[j]; MENU_ITEMS[j]=tmp;
+  renderMenuList();
+}
+
+function setMenuFontSize(sz){
+  MENU_FONT_SIZE=sz;
+  ['Small','Medium','Large'].forEach(function(s){
+    document.getElementById('mf'+s).classList.toggle('active',s.toLowerCase()===sz);
+  });
+  updateMenuPreview();
+}
+
+function updateMenuPreview(){
+  var tc = document.getElementById('mTCH').value||'#f0e0c8';
+  var hc = document.getElementById('mHCH').value||'#c07830';
+  var fs = MENU_FONT_MAP[MENU_FONT_SIZE]||'.82rem';
+  ['mpItem1','mpItem2'].forEach(function(id){
+    var el=document.getElementById(id); if(el){el.style.color=tc;el.style.fontSize=fs;}
+  });
+  var h=document.getElementById('mpItem3'); if(h){h.style.color=hc;h.style.fontSize=fs;}
+}
+
+async function saveMenu(){
+  if(!MENU_ITEMS.length){ toast('Add at least one menu item.','err'); return; }
+  var style={textColor:document.getElementById('mTCH').value||'#f0e0c8',hoverColor:document.getElementById('mHCH').value||'#c07830',fontSize:MENU_FONT_SIZE};
+  saving(true);
+  try{
+    await sbSaveSettings({menu_items:MENU_ITEMS, menu_style:style});
+    toast('&#10003; Menu saved!');
+  }catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+// ── CAT STYLE ──
+var FONT_MAP = {small:'.55rem', medium:'.65rem', large:'.82rem'};
+function syncHex(pickId, hexId){ document.getElementById(hexId).value = document.getElementById(pickId).value; }
+function syncPicker(hexId, pickId){ var v=document.getElementById(hexId).value; if(/^#[0-9a-f]{6}$/i.test(v)) document.getElementById(pickId).value=v; }
+function setFontSize(sz){
+  CAT_FONT_SIZE = sz;
+  ['Small','Medium','Large'].forEach(function(s){
+    document.getElementById('fs'+s).classList.toggle('active', s.toLowerCase()===sz);
+  });
+  updateCatPreview();
+}
+function updateCatPreview(){
+  var ac=document.getElementById('cACH').value||'#c07830';
+  var at=document.getElementById('cATH').value||'#1e0f06';
+  var bc=document.getElementById('cBCH').value||'#c07830';
+  var it=document.getElementById('cITH').value||'#f0e0c8';
+  var fs=FONT_MAP[CAT_FONT_SIZE]||'.65rem';
+  var base='padding:7px 18px;border-radius:20px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:inline-block;font-size:'+fs+';';
+  document.getElementById('pvActive').style.cssText=base+'background:'+ac+';color:'+at+';border:1px solid '+ac;
+  document.getElementById('pvInactive').style.cssText=base+'background:transparent;color:'+it+';border:1px solid '+bc+'88';
+  document.getElementById('pvInactive2').style.cssText=base+'background:transparent;color:'+it+';border:1px solid '+bc+'88';
+}
+async function saveCatStyle(){
+  var style={activeColor:document.getElementById('cACH').value||'#c07830',activeText:document.getElementById('cATH').value||'#1e0f06',borderColor:document.getElementById('cBCH').value||'#c07830',inactiveText:document.getElementById('cITH').value||'#f0e0c8',fontSize:CAT_FONT_SIZE};
+  saving(true);
+  try{ await sbSaveSettings({cat_style:style}); toast('&#10003; Style saved!'); }
+  catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+// ── CUSTOM CATS ──
+function populateCatSelects(){
+  var cats = allCats();
+  var opts = cats.map(function(c){ return '<option value="'+c+'">'+c.charAt(0).toUpperCase()+c.slice(1)+'</option>'; }).join('');
+  var fc=document.getElementById('fc'); if(fc) fc.innerHTML='<option value="">— Select —</option>'+opts;
+  var ec=document.getElementById('ec'); if(ec) ec.innerHTML=opts;
+}
+function renderCatList(){
+  var el=document.getElementById('catList'); if(!el) return;
+  var html='';
+  DEFAULT_CATS.forEach(function(c){
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg3);border-radius:5px;margin-bottom:6px;font-size:.78rem"><span>'+c.charAt(0).toUpperCase()+c.slice(1)+'</span><span style="font-size:.62rem;color:var(--mu)">Default</span></div>';
+  });
+  CUSTOM_CATS.forEach(function(cat,i){
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg3);border-radius:5px;margin-bottom:6px"><span style="font-size:.78rem">'+cat.charAt(0).toUpperCase()+cat.slice(1)+'</span><button onclick="removeCat('+i+')" style="font-size:.65rem;color:#e07070;background:none;border:none;cursor:pointer">Remove</button></div>';
+  });
+  el.innerHTML = html || '<p style="font-size:.76rem;color:var(--mu)">No custom categories yet.</p>';
+}
+function addCat(){
+  var inp=document.getElementById('newCatInput');
+  var val=inp.value.trim().toLowerCase().replace(/\s+/g,'-');
+  if(!val){toast('Enter a category name.','err');return;}
+  if(allCats().indexOf(val)>=0){toast('Already exists.','err');return;}
+  CUSTOM_CATS.push(val); inp.value='';
+  sbSaveSettings({custom_cats:CUSTOM_CATS});
+  renderCatList(); populateCatSelects(); toast('&#10003; Category added!');
+}
+function removeCat(i){
+  if(!confirm('Remove "'+CUSTOM_CATS[i]+'"?'))return;
+  CUSTOM_CATS.splice(i,1);
+  sbSaveSettings({custom_cats:CUSTOM_CATS});
+  renderCatList(); populateCatSelects(); toast('&#10003; Removed.');
+}
+
+// ── EMAILJS ──
+async function saveEmailJS(){
+  var pub=document.getElementById('ejPub').value.trim();
+  var svc=document.getElementById('ejSvc').value.trim();
+  var tpl=document.getElementById('ejTpl').value.trim();
+  if(!pub||!svc||!tpl){toast('Fill all 3 fields.','err');return;}
+  saving(true);
+  try{ await sbSaveSettings({emailjs_public:pub,emailjs_service:svc,emailjs_template:tpl}); toast('&#10003; Email settings saved!'); }
+  catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
+// ── CHANGE PASSWORD ──
+function changePass(){
+  var cp=document.getElementById('cp').value;
+  var np=document.getElementById('np').value;
+  var cnp=document.getElementById('cnp').value;
+  var c=getCreds();
+  if(cp!==c.pass){toast('Current password incorrect.','err');return;}
+  if(!np||np.length<6){toast('New password must be 6+ characters.','err');return;}
+  if(np!==cnp){toast('Passwords do not match.','err');return;}
+  try{ localStorage.setItem(CKEY,JSON.stringify({user:c.user,pass:np})); }catch(e){}
+  toast('&#10003; Password changed!');
+  ['cp','np','cnp'].forEach(function(id){document.getElementById(id).value='';});
+}
+
+// ── RESET ──
+async function resetAll(){
+  if(!confirm('Reset ALL products to defaults? This cannot be undone.'))return;
+  saving(true);
+  try{
+    await fetch(SB_URL+'/rest/v1/products',{method:'DELETE',headers:Object.assign({},SB_H,{'Prefer':''})});
+    for(var i=0;i<DEF.length;i++){
+      await sbFetch('/rest/v1/products',{method:'POST',headers:SB_H,body:JSON.stringify(DEF[i])});
+    }
+    var fresh=await sbFetch('/rest/v1/products?select=*&order=id.asc',{headers:SB_HR});
+    PRODS=Array.isArray(fresh)?fresh:[];
+    renderDash();renderProds('all');toast('&#10003; Reset complete!');
+  }catch(e){toast('Error: '+e.message,'err');}
+  saving(false);
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', function(){
+  show('scrLogin');
+  var ok=false; try{ok=sessionStorage.getItem('ud_ok')==='1';}catch(e){}
+  if(ok){ hide('scrLogin'); bootAdmin(); }
+  document.getElementById('lp').addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); });
+});
+</script>
+</body>
+</html>
