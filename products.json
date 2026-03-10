@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Short Panjabi \u2014 Sand White",
+    "name": "Short Panjabi — Sand White",
     "cat": "panjabi",
     "img": "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?w=700&q=85",
     "price": 3200,
@@ -17,7 +17,7 @@
   },
   {
     "id": 2,
-    "name": "Premium Linen Shirt \u2014 Natural Beige",
+    "name": "Premium Linen Shirt — Natural Beige",
     "cat": "shirt",
     "img": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=700&q=85",
     "price": 1800,
@@ -33,11 +33,11 @@
   },
   {
     "id": 3,
-    "name": "Premium Polo Shirt \u2014 Coffee Brown",
+    "name": "Premium Polo Shirt — Coffee Brown",
     "cat": "polo",
     "img": "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=700&q=85",
     "price": 2400,
-    "desc": "Fine piqu\u00e9 cotton polo in our signature coffee colorway.",
+    "desc": "Fine piqué cotton polo in our signature coffee colorway.",
     "isNew": true,
     "sizes": [
       "S",
@@ -49,7 +49,7 @@
   },
   {
     "id": 4,
-    "name": "Oxford Button-Down Shirt \u2014 White",
+    "name": "Oxford Button-Down Shirt — White",
     "cat": "shirt",
     "img": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=700&q=85",
     "price": 1800,
@@ -65,7 +65,7 @@
   },
   {
     "id": 5,
-    "name": "Short Panjabi \u2014 Olive Green",
+    "name": "Short Panjabi — Olive Green",
     "cat": "panjabi",
     "img": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&q=85",
     "price": 3200,
@@ -81,7 +81,7 @@
   },
   {
     "id": 6,
-    "name": "Short Panjabi \u2014 Charcoal Black",
+    "name": "Short Panjabi — Charcoal Black",
     "cat": "panjabi",
     "img": "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=700&q=85",
     "price": 3200,
@@ -97,7 +97,7 @@
   },
   {
     "id": 7,
-    "name": "Linen Shirt \u2014 Slate Blue",
+    "name": "Linen Shirt — Slate Blue",
     "cat": "shirt",
     "img": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=700&q=85",
     "price": 1800,
@@ -113,7 +113,7 @@
   },
   {
     "id": 8,
-    "name": "Cuban Collar Shirt \u2014 Brown",
+    "name": "Cuban Collar Shirt — Brown",
     "cat": "shirt",
     "img": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=700&q=85",
     "price": 1800,
@@ -129,11 +129,11 @@
   },
   {
     "id": 9,
-    "name": "Classic Polo \u2014 Navy Blue",
+    "name": "Classic Polo — Navy Blue",
     "cat": "polo",
     "img": "https://images.unsplash.com/photo-1571455786673-9d9d6c194f90?w=700&q=85",
     "price": 2400,
-    "desc": "Premium piqu\u00e9 cotton in deep navy.",
+    "desc": "Premium piqué cotton in deep navy.",
     "isNew": false,
     "sizes": [
       "S",
@@ -145,7 +145,7 @@
   },
   {
     "id": 10,
-    "name": "Striped Polo \u2014 Cream & Brown",
+    "name": "Striped Polo — Cream & Brown",
     "cat": "polo",
     "img": "https://images.unsplash.com/photo-1622445275576-721325763afe?w=700&q=85",
     "price": 2400,
@@ -161,7 +161,7 @@
   },
   {
     "id": 11,
-    "name": "Tailored Drip Trousers \u2014 Cream",
+    "name": "Tailored Drip Trousers — Cream",
     "cat": "trouser",
     "img": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=700&q=85",
     "price": 2200,
@@ -177,7 +177,7 @@
   },
   {
     "id": 12,
-    "name": "Slim Chino Trousers \u2014 Khaki",
+    "name": "Slim Chino Trousers — Khaki",
     "cat": "trouser",
     "img": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=700&q=85",
     "price": 2200,
@@ -193,7 +193,7 @@
   },
   {
     "id": 13,
-    "name": "Cargo Utility Trousers \u2014 Black",
+    "name": "Cargo Utility Trousers — Black",
     "cat": "trouser",
     "img": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=700&q=85",
     "price": 2500,
@@ -209,7 +209,7 @@
   },
   {
     "id": 14,
-    "name": "Varsity Bomber Jacket \u2014 Black",
+    "name": "Varsity Bomber Jacket — Black",
     "cat": "jacket",
     "img": "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=700&q=85",
     "price": 4200,
@@ -239,7 +239,7 @@
   },
   {
     "id": 16,
-    "name": "Structured Blazer \u2014 Camel",
+    "name": "Structured Blazer — Camel",
     "cat": "jacket",
     "img": "https://images.unsplash.com/photo-1548778052-311f4bc2b502?w=700&q=85",
     "price": 3800,
