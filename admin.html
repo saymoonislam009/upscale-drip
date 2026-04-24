@@ -130,13 +130,13 @@ select.f option{background:var(--bg2)}
 <!-- LOGIN -->
 <div class="scr on" id="scrLogin">
   <div class="login-box">
-    <img src="logo.jpg" alt="Upscale Drip"/>
+    <img src="logo.jpg" alt="Upscale Drip" onerror="this.style.display='none'"/>
     <h2>Upscale Drip</h2>
     <p>Admin Panel</p>
-    <input id="lu" type="text" placeholder="Username" autocomplete="off" spellcheck="false"/>
-    <input id="lp" type="password" placeholder="Password"/>
+    <input id="lu" type="email" placeholder="Admin Email" autocomplete="email" spellcheck="false"/>
+    <input id="lp" type="password" placeholder="Password" autocomplete="current-password"/>
     <div id="lerr"></div>
-    <button class="btn" style="width:100%;justify-content:center;padding:13px" onclick="doLogin()">Sign In</button>
+    <button class="btn" style="width:100%;justify-content:center;padding:13px" id="loginBtn" onclick="doLogin()">Sign In</button>
   </div>
 </div>
 
@@ -238,7 +238,7 @@ select.f option{background:var(--bg2)}
           <div id="fExtraGrid" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
           <input type="hidden" id="fImgs" value="[]"/>
         </div>
-        <div class="fg"><label>Extra Images (one URL per line)</label><textarea class="f" id="fImgs" rows="3" placeholder="https://...\nhttps://..."></textarea></div>
+        <div class="fg"><label>Extra Images (one URL per line)</label><textarea class="f" id="fImgsText" rows="3" placeholder="https://...\nhttps://..."></textarea></div>
         <div class="fg"><label>Description</label><textarea class="f" id="fDesc" rows="3" placeholder="Product description..."></textarea></div>
         <div class="fg"><label>Sizes (comma separated)</label><input class="f" id="fSizes" placeholder="S, M, L, XL, XXL"/></div>
         <div class="fg"><label>Colors (name:hexcode, e.g. Navy:#003153, Sand:#c2b280)</label><input class="f" id="fColors" placeholder="Navy:#003153, Sand White:#c2b280"/></div>
@@ -270,6 +270,37 @@ select.f option{background:var(--bg2)}
 
     <!-- SETTINGS -->
     <div class="content" id="tabSettings" style="display:none">
+
+      <div class="pbox" style="max-width:640px">
+        <h3>Typography &amp; Fonts</h3>
+        <p style="font-size:.72rem;color:var(--mu);margin-bottom:16px">Customize fonts for key areas of the site. Uses Google Fonts — paste the font family name exactly.</p>
+        <div class="fr2">
+          <div class="fg">
+            <label>Display / Heading Font</label>
+            <input class="f" id="fontDisplay" placeholder="Playfair Display" value="Playfair Display"/>
+            <p style="font-size:.62rem;color:var(--mu);margin-top:4px">Used for product names, titles, logo</p>
+          </div>
+          <div class="fg">
+            <label>Body Font</label>
+            <input class="f" id="fontBody" placeholder="Jost" value="Jost"/>
+            <p style="font-size:.62rem;color:var(--mu);margin-top:4px">Used for descriptions, buttons, labels</p>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Accent / Price Font Size</label>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="fbtn" id="priceFontSmall" onclick="setPriceFont('small')">Small</button>
+            <button class="fbtn active" id="priceFontMedium" onclick="setPriceFont('medium')">Medium</button>
+            <button class="fbtn" id="priceFontLarge" onclick="setPriceFont('large')">Large</button>
+          </div>
+        </div>
+        <p style="font-size:.65rem;color:var(--mu);margin:12px 0 4px">Popular Google Font pairings: <br/>
+          <span style="color:var(--ac)">Cormorant Garamond</span> + <span style="color:var(--ac)">Raleway</span> &nbsp;|&nbsp;
+          <span style="color:var(--ac)">Libre Baskerville</span> + <span style="color:var(--ac)">Lato</span> &nbsp;|&nbsp;
+          <span style="color:var(--ac)">Cinzel</span> + <span style="color:var(--ac)">Montserrat</span>
+        </p>
+        <button class="btn btn-grn" style="margin-top:10px" onclick="saveFonts()">&#10003; Save Fonts</button>
+      </div>
 
       <div class="pbox" style="max-width:640px">
         <h3>Hero Slides</h3>
@@ -410,13 +441,13 @@ select.f option{background:var(--bg2)}
       </div>
 
       <div class="pbox" style="max-width:640px">
-        <h3>Change Password</h3>
-        <div class="fg"><label>Current Password</label><input class="f" type="password" id="cp"/></div>
-        <div class="fr2">
-          <div class="fg"><label>New Password</label><input class="f" type="password" id="np"/></div>
-          <div class="fg"><label>Confirm New Password</label><input class="f" type="password" id="cnp"/></div>
-        </div>
-        <button class="btn" onclick="changePass()">Change Password</button>
+        <h3>Change Admin Password</h3>
+        <p style="font-size:.78rem;color:var(--mu);line-height:1.7;margin-bottom:16px">
+          Your admin password is managed securely by Supabase Auth — it is never stored in this file.<br/>
+          To change your password, go to:<br/>
+          <strong style="color:var(--ac)">Supabase Dashboard → Authentication → Users → click your email → Update password</strong>
+        </p>
+        <a href="https://supabase.com/dashboard" target="_blank" class="btn btn-ghost">Open Supabase Dashboard ↗</a>
       </div>
 
       <div class="pbox" style="max-width:640px">
@@ -510,9 +541,41 @@ select.f option{background:var(--bg2)}
 <script>
 var SB_URL = 'https://pwbvhiczbljxotyiqwin.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3YnZoaWN6YmxqeG90eWlxd2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzA0NjQsImV4cCI6MjA4ODY0NjQ2NH0.D5AfG-0RzwMVuLhfY_UIaBmjnXt2v2VZ6OrHuLbLZ10';
-var SB_H = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
-var SB_HR = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
-var CKEY = 'ud_creds';
+
+// ── SESSION ──────────────────────────────────────────────────
+// ACCESS_TOKEN holds the Supabase Auth JWT after login.
+// It is never stored in localStorage — only in memory.
+// All write operations use this token, not the anon key.
+var ACCESS_TOKEN = null;
+
+function getReadHeaders() {
+  // Read requests use anon key — public data only
+  return {'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY};
+}
+function getWriteHeaders() {
+  // Write requests MUST use the authenticated user's JWT
+  if (!ACCESS_TOKEN) throw new Error('Not authenticated.');
+  return {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + ACCESS_TOKEN,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+  };
+}
+function getStorageHeaders(contentType) {
+  if (!ACCESS_TOKEN) throw new Error('Not authenticated.');
+  return {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + ACCESS_TOKEN,
+    'Content-Type': contentType || 'application/octet-stream',
+    'x-upsert': 'true'
+  };
+}
+
+// Legacy — kept so existing code that references SB_H / SB_HR still works
+// but they are dynamically resolved through getWriteHeaders() / getReadHeaders()
+Object.defineProperty(window, 'SB_H',  { get: function(){ return getWriteHeaders(); } });
+Object.defineProperty(window, 'SB_HR', { get: function(){ return getReadHeaders();  } });
 
 // ── SUPABASE STORAGE UPLOAD ──
 var SB_BUCKET = 'products';
@@ -520,13 +583,13 @@ var SB_BUCKET = 'products';
 async function uploadToStorage(file, folder) {
   var ext = file.name.split('.').pop().toLowerCase();
   var fname = folder+'/'+Date.now()+'_'+Math.random().toString(36).slice(2)+'.'+ext;
-  var res = await fetch(SB_URL+'/storage/v1/object/'+SB_BUCKET+'/'+fname, {
-    method:'POST',
-    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':file.type,'x-upsert':'true'},
-    body:file
+  var res = await fetch(SB_URL+'/storage/v1/object/products/'+fname, {
+    method: 'POST',
+    headers: getStorageHeaders(file.type),
+    body: file
   });
   if(!res.ok){ var e=await res.text(); throw new Error(e); }
-  return SB_URL+'/storage/v1/object/public/'+SB_BUCKET+'/'+fname;
+  return SB_URL+'/storage/v1/object/public/products/'+fname;
 }
 
 // Tab switchers
@@ -650,31 +713,81 @@ function resetUploadState(p) {
   var cf=document.getElementById(p+'ChartFinal'); if(cf) cf.value='';
 }
 
-// ── AUTH ──
-function getCreds() {
-  try {
-    var r = localStorage.getItem(CKEY);
-    if (r) { var p = JSON.parse(r); if (p && p.user && p.pass) return p; }
-  } catch(e) {}
-  return {user:'upscaledrip', pass:'UD@Admin2026'};
-}
+// ── AUTH — Supabase Auth (no credentials stored in this file) ──
+// Password is verified server-side by Supabase.
+// The JWT access_token lives in memory only — never localStorage.
+var FAIL_KEY    = 'ud_fails';
+var LOCKOUT_KEY = 'ud_lockout';
+var MAX_FAILS   = 5;
+var LOCKOUT_MS  = 15 * 60 * 1000;
 
-function doLogin() {
-  var u = document.getElementById('lu').value.trim();
-  var p = document.getElementById('lp').value;
-  var err = document.getElementById('lerr');
-  if (!u) { err.textContent = 'Enter username.'; return; }
-  if (!p) { err.textContent = 'Enter password.'; return; }
-  var cr = getCreds();
-  if (u === cr.user && p === cr.pass) {
-    try { sessionStorage.setItem('ud_ok','1'); } catch(e) {}
+function getFailState() {
+  try { return { count: parseInt(sessionStorage.getItem(FAIL_KEY)||'0'), lockout: parseInt(sessionStorage.getItem(LOCKOUT_KEY)||'0') }; }
+  catch(e) { return {count:0, lockout:0}; }
+}
+function isLockedOut() {
+  var s = getFailState();
+  if (s.lockout && Date.now() < s.lockout) return true;
+  if (s.lockout) { sessionStorage.removeItem(LOCKOUT_KEY); sessionStorage.setItem(FAIL_KEY,'0'); }
+  return false;
+}
+function recordFail() {
+  var n = getFailState().count + 1;
+  sessionStorage.setItem(FAIL_KEY, String(n));
+  if (n >= MAX_FAILS) sessionStorage.setItem(LOCKOUT_KEY, String(Date.now() + LOCKOUT_MS));
+  return n;
+}
+function recordSuccess() { sessionStorage.removeItem(FAIL_KEY); sessionStorage.removeItem(LOCKOUT_KEY); }
+
+async function doLogin() {
+  var email = document.getElementById('lu').value.trim();
+  var pass  = document.getElementById('lp').value;
+  var err   = document.getElementById('lerr');
+  var btn   = document.getElementById('loginBtn');
+
+  if (isLockedOut()) {
+    var mins = Math.ceil((getFailState().lockout - Date.now()) / 60000);
+    err.textContent = 'Too many attempts. Try again in ' + mins + ' min.'; return;
+  }
+  if (!email || !pass) { err.textContent = 'Enter email and password.'; return; }
+
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+  try {
+    var r = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
+    });
+    var data = await r.json();
+    if (!r.ok || !data.access_token) {
+      var msg = data.error_description || data.message || 'Invalid email or password.';
+      var fails = recordFail();
+      var rem = MAX_FAILS - fails;
+      err.textContent = msg + (rem > 0 ? ' (' + rem + ' attempt' + (rem!==1?'s':'') + ' left)' : ' — locked 15 min.');
+      document.getElementById('lp').value = '';
+      return;
+    }
+    // Store JWT in memory only
+    ACCESS_TOKEN = data.access_token;
+    recordSuccess();
     hide('scrLogin'); bootAdmin();
-  } else {
-    err.textContent = 'Incorrect username or password.';
-    setTimeout(function(){ err.textContent = ''; }, 3000);
+  } catch(e) {
+    err.textContent = 'Network error. Check your connection.';
+  } finally {
+    btn.textContent = 'Sign In'; btn.disabled = false;
   }
 }
-function doLogout() { try{sessionStorage.removeItem('ud_ok');}catch(e){} hide('scrAdmin'); show('scrLogin'); }
+
+async function doLogout() {
+  if (ACCESS_TOKEN) {
+    try { await fetch(SB_URL+'/auth/v1/logout', { method:'POST', headers:{'apikey':SB_KEY,'Authorization':'Bearer '+ACCESS_TOKEN} }); } catch(e) {}
+  }
+  ACCESS_TOKEN = null;
+  hide('scrAdmin'); show('scrLogin');
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+  document.getElementById('lerr').textContent = '';
+}
 
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && document.getElementById('scrLogin').classList.contains('on')) doLogin();
@@ -821,11 +934,14 @@ function renderProds(cat) {
   var tb = document.getElementById('prodTable');
   if(!list.length){ tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--mu);padding:30px">No products</td></tr>'; return; }
   tb.innerHTML = list.map(function(p){
+    var priceCell = p.discount_price
+      ? '<span style="font-size:.7rem;text-decoration:line-through;color:var(--mu)">৳'+Number(p.price).toLocaleString()+'</span> <span style="color:#ff6b6b;font-weight:700">৳'+Number(p.discount_price).toLocaleString()+'</span>'
+      : '৳'+Number(p.price).toLocaleString();
     return '<tr>'+
-      '<td><img class="prod-thumb" src="'+p.img+'" alt=""/></td>'+
+      '<td><img class="prod-thumb" src="'+p.img+'" alt="" onerror="this.onerror=null;this.style.opacity=\'.3\';this.src=\'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=100\'"/></td>'+
       '<td style="max-width:200px"><div style="font-size:.8rem;color:var(--cr2)">'+p.name+'</div></td>'+
       '<td><span style="font-size:.65rem;color:var(--mu)">'+p.cat+'</span></td>'+
-      '<td>৳'+Number(p.price).toLocaleString()+'</td>'+
+      '<td>'+priceCell+'</td>'+
       '<td>'+(p.isnew?'<span class="badge-new">NEW</span>':'<span style="color:var(--mu);font-size:.7rem">Regular</span>')+'</td>'+
       '<td><div class="act-btns">'+
         '<button class="btn btn-sm btn-ghost" onclick="openEdit('+p.id+')">Edit</button>'+
@@ -991,6 +1107,13 @@ async function loadSettings() {
       if(cso.inactiveText){ document.getElementById('cIT').value=cso.inactiveText; document.getElementById('cITH').value=cso.inactiveText; }
       if(cso.fontSize) setFontSize(cso.fontSize);
     }
+    // Fonts
+    var fonts = s && s.fonts;
+    if(fonts){ var fo=typeof fonts==='string'?JSON.parse(fonts):fonts;
+      if(fo.display) document.getElementById('fontDisplay').value=fo.display;
+      if(fo.body) document.getElementById('fontBody').value=fo.body;
+      if(fo.priceSize) setPriceFont(fo.priceSize);
+    }
     // EmailJS
     if(s && s.emailjs_public) document.getElementById('ejPub').value = s.emailjs_public;
     if(s && s.emailjs_service) document.getElementById('ejSvc').value = s.emailjs_service;
@@ -1134,6 +1257,24 @@ async function saveMenu(){
   saving(false);
 }
 
+// ── FONTS ──
+var PRICE_FONT_SIZE = 'medium';
+function setPriceFont(sz){
+  PRICE_FONT_SIZE=sz;
+  ['Small','Medium','Large'].forEach(function(s){
+    document.getElementById('priceFont'+s).classList.toggle('active',s.toLowerCase()===sz);
+  });
+}
+async function saveFonts(){
+  var disp=document.getElementById('fontDisplay').value.trim()||'Playfair Display';
+  var body=document.getElementById('fontBody').value.trim()||'Jost';
+  var fonts={display:disp,body:body,priceSize:PRICE_FONT_SIZE};
+  saving(true);
+  try{ await sbSaveSettings({fonts:fonts}); toast('&#10003; Fonts saved!'); }
+  catch(e){ toast('Error: '+e.message,'err'); }
+  saving(false);
+}
+
 // ── CAT STYLE ──
 var FONT_MAP = {small:'.55rem', medium:'.65rem', large:'.82rem'};
 function syncHex(pickId, hexId){ document.getElementById(hexId).value = document.getElementById(pickId).value; }
@@ -1212,16 +1353,8 @@ async function saveEmailJS(){
 
 // ── CHANGE PASSWORD ──
 function changePass(){
-  var cp=document.getElementById('cp').value;
-  var np=document.getElementById('np').value;
-  var cnp=document.getElementById('cnp').value;
-  var c=getCreds();
-  if(cp!==c.pass){toast('Current password incorrect.','err');return;}
-  if(!np||np.length<6){toast('New password must be 6+ characters.','err');return;}
-  if(np!==cnp){toast('Passwords do not match.','err');return;}
-  try{ localStorage.setItem(CKEY,JSON.stringify({user:c.user,pass:np})); }catch(e){}
-  toast('&#10003; Password changed!');
-  ['cp','np','cnp'].forEach(function(id){document.getElementById(id).value='';});
+  // Password management is done via Supabase Dashboard → Authentication → Users
+  toast('To change your password, go to Supabase Dashboard → Authentication → Users.', 'err');
 }
 
 // ── RESET ──
@@ -1229,11 +1362,11 @@ async function resetAll(){
   if(!confirm('Reset ALL products to defaults? This cannot be undone.'))return;
   saving(true);
   try{
-    await fetch(SB_URL+'/rest/v1/products',{method:'DELETE',headers:Object.assign({},SB_H,{'Prefer':''})});
+    await fetch(SB_URL+'/rest/v1/products',{method:'DELETE',headers:Object.assign({},getWriteHeaders(),{'Prefer':''})});
     for(var i=0;i<DEF.length;i++){
-      await sbFetch('/rest/v1/products',{method:'POST',headers:SB_H,body:JSON.stringify(DEF[i])});
+      await sbFetch('/rest/v1/products',{method:'POST',headers:getWriteHeaders(),body:JSON.stringify(DEF[i])});
     }
-    var fresh=await sbFetch('/rest/v1/products?select=*&order=id.asc',{headers:SB_HR});
+    var fresh=await sbFetch('/rest/v1/products?select=*&order=id.asc',{headers:getReadHeaders()});
     PRODS=Array.isArray(fresh)?fresh:[];
     renderDash();renderProds('all');toast('&#10003; Reset complete!');
   }catch(e){toast('Error: '+e.message,'err');}
@@ -1242,9 +1375,9 @@ async function resetAll(){
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded', function(){
+  // Never auto-login from storage — user must authenticate every session
   show('scrLogin');
-  var ok=false; try{ok=sessionStorage.getItem('ud_ok')==='1';}catch(e){}
-  if(ok){ hide('scrLogin'); bootAdmin(); }
+  document.getElementById('lu').addEventListener('keydown',function(e){ if(e.key==='Enter') document.getElementById('lp').focus(); });
   document.getElementById('lp').addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); });
 });
 </script>
