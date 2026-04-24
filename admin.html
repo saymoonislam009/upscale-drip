@@ -226,6 +226,7 @@ select.f option{background:var(--bg2)}
             </div>
           </div>
           <div id="fImgUrl" style="display:none"><input class="f" id="fImgUrlVal" placeholder="https://..."/></div>
+          <input type="hidden" id="fImgFinal"/>
           <input type="hidden" id="fImg"/>
         </div>
         <div class="fg">
@@ -612,16 +613,22 @@ async function handleMainImg(p, input) {
   var prev   = document.getElementById(p+'ImgPrev');
   var prevI  = document.getElementById(p+'ImgPrevImg');
   var status = document.getElementById(p+'ImgStatus');
-  var hidden = document.getElementById(p+'ImgFinal') || document.getElementById(p+'Img');
+  // Write to fImgFinal (for getImgVal) — fImg is legacy fallback
+  var hidden = document.getElementById(p+'ImgFinal');
+  if(!hidden) hidden = document.getElementById(p+'Img');
   prevI.src = URL.createObjectURL(file);
   prev.style.display = 'flex';
   status.textContent = 'Uploading...';
   try {
     var url = await uploadToStorage(file, 'images');
-    if(hidden) hidden.value = url;
+    // Write to BOTH hidden inputs so nothing is missed
+    var hf = document.getElementById(p+'ImgFinal');
+    var hb = document.getElementById(p+'Img');
+    if(hf) hf.value = url;
+    if(hb) hb.value = url;
     status.textContent = '✓ Uploaded!';
     setTimeout(function(){ status.textContent=''; }, 2500);
-  } catch(e) { status.textContent = '✗ '+e.message; }
+  } catch(e) { status.textContent = '✗ Upload failed: '+e.message; }
 }
 
 // Upload extra images
@@ -707,10 +714,12 @@ function getExtraImgs(p) {
 function resetUploadState(p) {
   var prev=document.getElementById(p+'ImgPrev'); if(prev) prev.style.display='none';
   var hid=document.getElementById(p+'ImgFinal'); if(hid) hid.value='';
+  var hid2=document.getElementById(p+'Img'); if(hid2) hid2.value='';
   var grid=document.getElementById(p+'ExtraGrid'); if(grid) grid.innerHTML='';
   var imgs=document.getElementById(p+'Imgs'); if(imgs) imgs.value='[]';
   var cp=document.getElementById(p+'ChartPrev'); if(cp) cp.style.display='none';
   var cf=document.getElementById(p+'ChartFinal'); if(cf) cf.value='';
+  var st=document.getElementById(p+'ImgStatus'); if(st) st.textContent='';
 }
 
 // ── AUTH — Supabase Auth (no credentials stored in this file) ──
@@ -957,8 +966,11 @@ async function addProduct() {
   var cat = document.getElementById('fc').value;
   var price = document.getElementById('fp').value;
   var img = getImgVal('f');
+  // Also check fImgStatus — if still uploading, warn
+  var status = document.getElementById('fImgStatus');
+  if(status && status.textContent === 'Uploading...') { toast('Please wait — image is still uploading.','err'); return; }
   if(!name||!cat||!price){ toast('Fill in Name, Category and Price.','err'); return; }
-  if(!img){ toast('Add a product image (upload or URL).','err'); return; }
+  if(!img){ toast('Add a product image — upload a photo or paste a URL.','err'); return; }
   var discount = document.getElementById('fDiscount').value;
   var imgs = getExtraImgs('f');
   var sizes = document.getElementById('fSizes').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
